@@ -1,5 +1,7 @@
 \documentclass[sigconf]{acmart}
 
+\settopmatter{printacmref=false}
+
 \begin{document}
 
 \title{Info Retrieval: Project Proposal}
@@ -20,24 +22,49 @@
 \affiliation{%
   \institution{University of Utah}
 }
-\email{bmanmo14@gmail.com}
+\email{brandon.ward@utah.edu}
 
 \begin{abstract}
-  Our project proposal is an exploratory project in hopes of developing a search engine based on what we have learned in class. We propose to develop a search engine for a dataset that we found for Wikipedia webpage documents. In this exploratory project, we plan to include methods for ranking algorithms, clustering of web docs after a user query, developing a user interface (UI), and using several evaluation metrics to compare relevance of the queries.
+Our project proposal is an exploratory project with the goal of developing a search engine based on what we have learned in class. We propose to develop a search engine for a dataset containing web page documents. In this exploratory project, we plan to include methods for ranking algorithms, clustering of web docs after a user query, developing a user interface (UI), and using several evaluation metrics to compare relevance of the queries.
 \end{abstract}
 
-\keywords{search engine}
+\keywords{search engine, learning to rank, clustering}
 
 \maketitle
 
 \section{Introduction}
-During the course for Introduction to Information Retrieval (CS 6550), we have covered a multitude of topics and methods regarding current standards for information retrieval (IR). The topics covered provide a large amount of possibilities for a class project.
+Our project proposal is an exploratory project with the goal of developing a search engine based on what we have learned in class. We propose to develop a search engine for a dataset containing web page documents. In this exploratory project, we plan to include methods for ranking algorithms, clustering of web docs after a user query, developing a user interface (UI), and using several evaluation metrics to compare relevance of the queries.
 
-Our group’s common interest is to develop a simple, yet efficient, search engine that contains a healthy amount of topics and methods covered in the CS 6550 course. This project provides us an opportunity to apply what we have learned during class and assignments to develop a search engine tool. We plan to put our own twist on the search engine by including a post-query clustering for documents containing similar topics.
+The proposed search engine project also gives us a great opportunity to combine our back-end learnings from the course with a front-end UI. We believe that this will be a great challenge as simplicity in UI design remains a crucial component for any search engine.
 
-The proposed search engine project also gives us a great opportunity to combine our back-end learnings from the course with a front-end UI. We believe that this will be a great challenge as simplicity in UI design remains a crucial component for any search engine. We believe that displaying the clustered documents in a simple UI will be the most challenging part for the front-end. 
+\section{Dataset}
+The dataset that we are currently planning to work with contains Wikipedia webpage documents. The dataset was last updated in 2009, but it contains 10GB of web page document data. Since this dataset is so large, we were originally planning ons using it as our corpus for the search engine.
 
-Since this project is exploratory and its purpose is to help us further our knowledge and understanding of IR, our goal is to make sure that our search engine is functional, user friendly, and as efficient as possible based on our current knowledge of IR.
+It was brought to our attention during our presentation that the Wikipedia dataset is already categorized making the post-query clustering a redundant feature. We are currently trying to find more reasonable datasets that would allow us to build a search engine that incorporates post-query clustering. We are looking into datasets from Twitter and will continue to explore existing datasets until we find one that is adequate for our project.
+
+\section{Ranking and Scoring}
+We want to perform various different ranking and scoring methods on the dataset so that we have a starting point for clustering the results of a query. We will first rank and score the documents from our dataset with common ranking functions such as the PageRank algorithm we learned in class.
+
+
+We also want to experiment ranking our documents with machine learning techniques, such as Ranking SVM. From our research of learning to rank and Ranking SVM, we noticed that accuracy in results can be an issue. We've discovered that it is crucial during training to ensure that there is no bias towards queries with a large number of relevant documents. To avoid this issue, we will implement Ranking SVM in a way that optimizes the Hinge Loss function \cite{one}.
+
+\section{Clustering}
+We want to incorporate clustering into our search engine in a way that it may still be meaningful for a user. We plan to cluster documents based on a user's query and display the clustered documents in a UI that would allow users to easily sift through different document topics.
+
+Since we have not officially selected a dataset at this point, we don't know what to expect in our data. However, we will assume that the data will be in a random uniform distribution. With this assumption in mind, we will likely use some sort of K-Means clustering in our finished product. We will be testing different clustering models during our experiment and will choose the best k-clusters based on the point of diminishing returns. 
+
+
+\section{Evaluation Metrics}
+We would like to evaluate a few things within this project. First, depending on the size of the dataset, we would like to evaluate the speed of the different ranking and scoring algorithms. Second, we would like to evaluate the accuracy of the ranking algorithms using different evaluation metrics. Currently we have decided on using Mean Average Precision (MAP) and normalized Discounted Cumulative Gain (nDCG) for the evaluation metrics. Finally, for the clustering aspect of our project, we would like to evaluate similarities of the documents.
+
+\section{Visualization}
+	For visualization, we want the ability for a user to search the dataset with a simple search bar within a webpage. Based on the query, a user will be able to compare and contrast the results of different ranking \& scoring algorithms along with different evaluation metrics. In addition to this, the clustering of the results will also be available for visualization. To implement the UI, we are thinking of using the D3 library, Bootstrap, and Javascript. 
+
+\section{Contribution}
+The individual contributions to the project will be assigned as follows: Brandon will process the dataset and implement ranking functions; Blaze will develop a clustering model for post-query results; Raj will implement the front-end using D3/Bootstrap and collaborate with Brandon in implementing the ranking functions.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bib/ref.bib}
 
 \end{document}
 \endinput
