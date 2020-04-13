@@ -4,15 +4,35 @@
     <meta charset="UTF-8">
     <title>Movie Search Engine</title>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Javascript -->
+    <script src="js/index.js" async></script>
 
     <!-- D3 -->
     <script src="https://d3js.org/d3.v5.js"></script>
 </head>
-<body>
-Search Engine
+<body class="flex_column">
+<div id="search_bar_container" class="flex_column">
+    <p>Search Movies</p>
+    <div class="flex_row">
+        <input id="search_bar_input" type="text" class="search_bar" autocomplete="off" placeholder="Search movies and movie reviews..." />
+        <button id="search_bar_button" class="fa fa-search" onclick="search_request()"></button>
+    </div>
+</div>
+<div id="search_results_container" class="flex_row">
+    <div id="results">
+        Results
+    </div>
+    <div id="clusters">
+        Clusters
+    </div>
+</div>
 </body>
 </html>
