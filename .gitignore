@@ -1,6 +1,7 @@
 IMDb*
 *~
-amazon_reviews
+amazon-movie-reviews.zip
+movies.txt
 
 # Pycharm / Python
 .DS_Store
