@@ -1,1 +1,2 @@
 dataset/IMDb/imdb-extensive-dataset.zip filter=lfs diff=lfs merge=lfs -text
+*.jar filter=lfs diff=lfs merge=lfs -text
