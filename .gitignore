@@ -1,3 +1,8 @@
 IMDb*
 *~
 amazon_reviews
+
+# Pycharm / Python
+.DS_Store
+*.idea/
+__pycache__/*
