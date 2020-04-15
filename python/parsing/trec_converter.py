@@ -2,7 +2,7 @@ import csv
 import re
 
 def main():
-    file_path = '../../dataset/IMDb movies.csv'
+    file_path = '../../dataset/IMDb/imdb-extensive-dataset/IMDb movies.csv'
 
     trec_out = open('../../dataset/TREC_movies.txt', 'w')
 
@@ -13,7 +13,7 @@ def main():
             trec_out.write('<DOC>\n')
             trec_out.write('<DOCNO>'+str(re.search(r'\d+', row[0]).group())+'</DOCNO>\n')
             trec_out.write('<TITLE>'+row[1]+'</TITLE>\n')
-            trec_out.write('<orignial_title>' + row[2] + '</orignial_title>\n')
+            trec_out.write('<original_title>' + row[2] + '</original_title>\n')
             trec_out.write('<year>' + str(row[3]) + '</year>\n')
             trec_out.write('<date_published>' + str(row[4]) + '</date_published>\n')
             trec_out.write('<genre>' + str(row[5]) + '</genre>\n')
