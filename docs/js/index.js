@@ -11,7 +11,7 @@ function search_request() {
       'type': 'GET',
       'url': "http://localhost:8000/search",
       'data': {
-        'query': query_text
+        'search_query': query_text
       },
       'success': handle_search_response
     })
