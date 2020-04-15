@@ -31,6 +31,8 @@ public class Server {
         headers.add("Access-Control-Allow-Origin", "*");
 
         JSONObject obj = new JSONObject();
+        obj.put("Result", "Hello World!");
+
         String response = "Hello World!";
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
