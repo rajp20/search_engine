@@ -1,8 +1,20 @@
 // Search bar events
+function handle_search_response(data) {
+  console.log(data)
+}
+
 function search_request() {
   let query_text = $("#search_bar_input").val()
   if (query_text != "") {
-    console.log(query_text)
+    console.log('Making search request...')
+    $.ajax({
+      'type': 'GET',
+      'url': "http://localhost:8000/search",
+      'data': {
+        'query': query_text
+      },
+      'success': handle_search_response
+    })
   }
 }
 
