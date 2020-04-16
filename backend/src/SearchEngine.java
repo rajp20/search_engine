@@ -14,8 +14,6 @@ import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
 
-import org.python.util.PythonInterpreter;
-
 public class SearchEngine {
 
     public static String indexPath = "backend/movies_index/";
