@@ -3,6 +3,12 @@ IMDb\ *
 amazon-movie-reviews.zip
 movies.txt
 
+movie_reviews\ *
+*~
+meta_Movies_and_TV.json
+movie_reviews.json
+Movies_and_TV.json
+
 # Pycharm / Python
 .DS_Store
 *.idea/
