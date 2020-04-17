@@ -12,7 +12,7 @@ Movies_and_TV.json
 *.idea/
 __pycache__/*
 
-*.jar
+*.json
 *.txt
 backend/galago
 
