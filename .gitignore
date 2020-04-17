@@ -1,12 +1,8 @@
-IMDb\ *
 *~
-amazon-movie-reviews.zip
-movies.txt
 
 build_logs
 backend.iml
 
-imdb-extensive-dataset
 meta_Movies_and_TV.json
 movie_reviews.json
 Movies_and_TV.json
@@ -19,3 +15,5 @@ __pycache__/*
 *.jar
 *.txt
 *.json
+
+dataset/*
