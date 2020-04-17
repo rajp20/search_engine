@@ -4,6 +4,7 @@ amazon-movie-reviews.zip
 movies.txt
 
 build_logs
+backend.iml
 
 movie_reviews\ *
 *~
