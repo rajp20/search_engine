@@ -6,8 +6,7 @@ movies.txt
 build_logs
 backend.iml
 
-movie_reviews\ *
-*~
+imdb-extensive-dataset
 meta_Movies_and_TV.json
 movie_reviews.json
 Movies_and_TV.json
