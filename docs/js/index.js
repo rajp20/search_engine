@@ -1,3 +1,6 @@
+let resultsView = new Results()
+resultsView.setupView()
+
 // Search bar events
 $("#search_bar_input").on("keyup", function (event) {
   if (event.keyCode === 13) {

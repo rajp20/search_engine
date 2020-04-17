@@ -28,7 +28,6 @@ public class Server {
         Map<String, String> query = queryToMap(requestURI.getQuery());
         String searchQuery = query.get("search_query");
         System.out.println("Search query: " + searchQuery);
-        System.out.println();
 
         String response;
         if (searchQuery == null) {

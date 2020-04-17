@@ -36,6 +36,7 @@ public class SearchEngine {
     }
 
     public JSONObject loadJSON(String file) {
+        System.out.println("Loading JSON dataset...");
         JSONObject toReturn = new JSONObject();
         try {
             InputStream is = new FileInputStream(file);
@@ -44,12 +45,15 @@ public class SearchEngine {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        System.out.println("Done.\n");
         return toReturn;
     }
 
     public String search(String query) {
-        JSONObject searchedMoviesIDs = searchMovies(query);
+        System.out.println("Searching...");
+        JSONObject searchedMoviesIDs = searchWithGalago(query, moviesIndex);
         JSONObject searchedMoviesData = getMovieDataFromIDs(searchedMoviesIDs);
+        System.out.println("Done searching.\n");
         return searchedMoviesData.toString();
     }
 
@@ -68,11 +72,11 @@ public class SearchEngine {
         return toReturn;
     }
 
-    public static JSONObject searchMovies(String query) {
+    public static JSONObject searchWithGalago(String query, String indexPath) {
         JSONObject toReturn = new JSONObject();
         try {
             Parameters queryParams = Parameters.create();
-            queryParams.set("index", moviesIndex);
+            queryParams.set("index", indexPath);
 
             //- Set how many docs to return
             queryParams.set("requested", 50);
@@ -136,9 +140,5 @@ public class SearchEngine {
             ex.printStackTrace();
         }
         return toReturn;
-    }
-
-    public static void searchActors(String query) {
-
     }
 }
