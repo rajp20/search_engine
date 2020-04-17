@@ -3,6 +3,9 @@ IMDb\ *
 amazon-movie-reviews.zip
 movies.txt
 
+build_logs
+backend.iml
+
 movie_reviews\ *
 *~
 meta_Movies_and_TV.json

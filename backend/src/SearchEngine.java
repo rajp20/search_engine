@@ -16,7 +16,8 @@ import org.lemurproject.galago.core.*;
 
 public class SearchEngine {
 
-    public static String indexPath = "backend/index/";
+    public static String moviesIndex = "backend/movies_index/";
+    public static String namesIndex = "backend/names_index/";
 
     public static String search(String query) {
         galagoSearch(query);
@@ -27,15 +28,11 @@ public class SearchEngine {
     }
 
     public static void galagoSearch(String query) {
-        System.out.println("Searching with galago...");
 //        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         try {
             Parameters queryParams = Parameters.create();
-            queryParams.set("index", indexPath);
-
-
-//            queryParams.set("inputPath", inputPath);
-//            queryParams.set("filetype", "trectext");
+            queryParams.set("index", moviesIndex);
+            
             //- Set how many docs to return
             queryParams.set("requested", 5);
 
@@ -44,7 +41,7 @@ public class SearchEngine {
 
             //- Set the index to be searched
             Retrieval ret = RetrievalFactory.create(queryParams);
-            LocalRetrieval localRet = new LocalRetrieval(indexPath, queryParams);
+            LocalRetrieval localRet = new LocalRetrieval(moviesIndex, queryParams);
 
 
             FieldStatistics fs = ret.getCollectionStatistics("#lengths:part=lengths()");
@@ -59,21 +56,6 @@ public class SearchEngine {
                     maxDocName = name;
                 }
             }
-
-            //            LengthsIterator iterator = localRet.getDocumentLengthsIterator();
-//            ScoringContext sc = new ScoringContext();
-//            while (!iterator.isDone()) {
-//                sc.document = iterator.currentCandidate();
-//                if (iterator.hasMatch(sc)) {
-//                    String name = localRet.getDocumentName(sc.document);
-//                    int len = iterator.length(sc);
-//                    if (len > maxDocLength) {
-//                        maxDocName = name;
-//                        maxDocLength = len;
-//                    }
-//                }
-//                iterator.movePast(sc.document);
-//            }
 
             System.out.println("Max Length of a Document");
             System.out.println("Length: " + maxDocLength);
