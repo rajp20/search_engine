@@ -2,8 +2,9 @@ import org.python.util.PythonInterpreter;
 
 public class Clustering {
     public static void test() {
-    try(PythonInterpreter pyInterp = new PythonInterpreter()) {
-      pyInterp.exec("print('Hello Python World!')");
+    try(PythonInterpreter pi = new PythonInterpreter()) {
+        pi.execfile("python/clustering/Cluster.py");
+        pi.exec("k_means_pp(\"Passed in value!\")");
     }
   }
 }
