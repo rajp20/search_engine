@@ -14,77 +14,61 @@ import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import org.apache.commons.csv.*;
+
 public class SearchEngine {
 
     public static String moviesIndex = "backend/movies_index/";
     public static String namesIndex = "backend/names_index/";
 
+    public static String imdbMovieDatasetPath = "dataset/IMDb/imdb-extensive-dataset/IMDb_movies.csv";
+
+    public SearchEngine() {
+        CSVParser movieDataset = loadCSV(imdbMovieDatasetPath);
+    }
+
+    public static CSVParser loadCSV(String path) {
+        try {
+            FileInputStream csvFile = new FileInputStream(path);
+            InputStreamReader input = new InputStreamReader(csvFile);
+            CSVParser parser = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(input);
+            return parser;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     public static String search(String query) {
-        galagoSearch(query);
+        JSONObject searchedMovies = searchMovies(query);
         JSONObject obj = new JSONObject();
         obj.put("Result", "Hello World!");
 
         return obj.toJSONString();
     }
 
-    public static void galagoSearch(String query) {
-//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+    public static JSONObject searchMovies(String query) {
+        JSONObject toReturn = new JSONObject();
         try {
             Parameters queryParams = Parameters.create();
             queryParams.set("index", moviesIndex);
-            
+
             //- Set how many docs to return
-            queryParams.set("requested", 5);
+            queryParams.set("requested", 50);
 
             //- Do verbose output
             queryParams.set("verbose", true);
 
             //- Set the index to be searched
             Retrieval ret = RetrievalFactory.create(queryParams);
-            LocalRetrieval localRet = new LocalRetrieval(moviesIndex, queryParams);
 
-
-            FieldStatistics fs = ret.getCollectionStatistics("#lengths:part=lengths()");
-
-            int maxDocLength = 0;
-            String maxDocName = "";
-            for (long i = 0; i < fs.documentCount; i++) {
-                String name = localRet.getDocumentName(i);
-                int len = localRet.getDocumentLength(i);
-                if (len > maxDocLength) {
-                    maxDocLength = len;
-                    maxDocName = name;
-                }
-            }
-
-            System.out.println("Max Length of a Document");
-            System.out.println("Length: " + maxDocLength);
-            System.out.println("ID: " + maxDocName);
-
-            System.out.println("\nFieldStatistics...");
-            System.out.println("Field Name           : " + fs.fieldName);
-            System.out.println("Collection Length    : " + fs.collectionLength);
-            System.out.println("Document Count       : " + fs.documentCount);
-            System.out.println("Max Length           : " + fs.maxLength);
-            System.out.println("Min Length           : " + fs.minLength);
-            System.out.println("Ave Length           : " + fs.avgLength);
-            System.out.println("Non Zero Len Doc Cnt : " + fs.nonZeroLenDocCount);
-            System.out.println("First Doc ID: " + fs.firstDocId +
-                    "      Last Doc ID: " + fs.lastDocId);
-
-            IndexPartStatistics ips = ret.getIndexPartStatistics ("postings");
-            System.out.println ("\nIndexPartStatistics...");
-            System.out.println ("Part Name              : " + ips.partName);
-            System.out.println ("Collection Length      : " + ips.collectionLength);
-            System.out.println ("Highest Document Count : " + ips.highestDocumentCount);
-            System.out.println ("Vocabulary Count       : " + ips.vocabCount);
-            System.out.println ("Highest Frequency      : " + ips.highestFrequency);
-
-            //- Construct initial query.  Could be a simple or complex type.
-            String qText = query;
 
             //  Returned parsed query will be the root node of a query tree.
-            Node q = StructuredQuery.parse(qText);
+            Node q = StructuredQuery.parse(query);
             System.out.println("Parsed Query: " + q.toString());
 
             //- Transform the query in compliance to the many traversals that might
@@ -120,12 +104,21 @@ public class SearchEngine {
 
                     System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
                             rank, eid, iid, score, len);
-          }
+
+                    toReturn.put("Rank", rank);
+                    toReturn.put("ID", eid);
+                    toReturn.put("Score", score);
+                }
 
                 System.out.println("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return toReturn;
+    }
+
+    public static void searchActors(String query) {
+
     }
 }

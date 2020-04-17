@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class Server {
 
+    public static SearchEngine searchEngine = new SearchEngine();
+
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8000), 0);
         HttpContext context = server.createContext("/search");
@@ -31,7 +33,7 @@ public class Server {
         headers.add("Content-Type", "application/json");
         headers.add("Access-Control-Allow-Origin", "*");
 
-        String response = SearchEngine.search(searchQuery);
+        String response = searchEngine.search(searchQuery);
 
         System.out.println("JSON Response:");
         System.out.println(response);
