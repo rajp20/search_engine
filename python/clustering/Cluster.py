@@ -1,8 +1,12 @@
 import math
 import random
 
+data=None
+
 def k_means_pp(string):
-    print(string)
+#     print(data)
+    for item in data:
+        print(item)
     # centers = []
     # centers.append(data[0])
     # mean_costs = []
