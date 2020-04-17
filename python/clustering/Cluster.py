@@ -1,8 +1,12 @@
 import math
 import random
-from clustering.Word2Vec import vectorize
+import imp
+
+Word2Vec = imp.load_source('Word2Vec', "python/clustering/Word2Vec.py").load_module()
+
 
 data=None
+print(os.path.abspath(os.getcwd()))
 
 def k_means_pp():
     vectorized_data = vectorize(data)
