@@ -1,4 +1,6 @@
-import org.json.simple.JSONObject;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.JSONObject;
+
 
 import org.lemurproject.galago.core.index.Index;
 import org.lemurproject.galago.core.index.corpus.DocumentReader;
@@ -13,31 +15,42 @@ import org.lemurproject.galago.core.retrieval.query.Node;
 import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
+import org.python.antlr.ast.Str;
 
-import java.io.File;
+import org.apache.commons.io.IOUtils;
+
 import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
-
-//import org.apache.commons.csv.*;
+import java.io.InputStream;
 
 public class SearchEngine {
 
     public static String moviesIndex = "backend/movies_index/";
     public static String namesIndex = "backend/names_index/";
 
-    public static String imdbMovieDatasetPath = "dataset/IMDb/imdb-extensive-dataset/IMDb_movies.csv";
+    public static String imdbMovieDatasetPath = "dataset/IMDb/movies_pretty.json";
 
     public JSONObject movieDataset;
 
     public SearchEngine() {
-//        movieDataset = loadCSV(imdbMovieDatasetPath);
+        movieDataset = loadJSON(imdbMovieDatasetPath);
+    }
+
+    public JSONObject loadJSON(String file) {
+        JSONObject toReturn = new JSONObject();
+        try {
+            InputStream is = new FileInputStream(file);
+            String jsonText = IOUtils.toString(is, "UTF-8");
+            toReturn = new JSONObject(jsonText);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return toReturn;
     }
 
     public String search(String query) {
         JSONObject searchedMoviesIDs = searchMovies(query);
         JSONObject searchedMoviesData = getMovieDataFromIDs(searchedMoviesIDs);
-        return searchedMoviesData.toJSONString();
+        return searchedMoviesData.toString();
     }
 
     public JSONObject getMovieDataFromIDs(JSONObject movieIDs) {
@@ -128,56 +141,4 @@ public class SearchEngine {
     public static void searchActors(String query) {
 
     }
-
-    //    public static JSONObject loadCSV(String path) {
-//        JSONObject toReturn = new JSONObject();
-//        try {
-//            FileWriter jsonFile = new FileWriter("dataset/IMDb/movies.json");
-//            jsonFile.write("{");
-//            FileInputStream csvFile = new FileInputStream(path);
-//            InputStreamReader input = new InputStreamReader(csvFile);
-//            CSVParser parser = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(input);
-//            int count = 0;
-//
-//            for (CSVRecord record : parser) {
-//                JSONObject toAdd = new JSONObject();
-//                String id = record.get("imdb_title_id").substring(2);
-//                toAdd.put("ID", id);
-//                toAdd.put("Title", record.get("title"));
-//                toAdd.put("Year", record.get("year"));
-//                toAdd.put("Date Published", record.get("date_published"));
-//                toAdd.put("Genre", record.get("genre"));
-//                toAdd.put("Duration", record.get("duration"));
-//                toAdd.put("Country", record.get("country"));
-//                toAdd.put("Language", record.get("language"));
-//                toAdd.put("Director", record.get("director"));
-//                toAdd.put("Writer", record.get("writer"));
-//                toAdd.put("Production Company", record.get("production_company"));
-//                toAdd.put("Actors", record.get("actors"));
-//                toAdd.put("Description", record.get("description"));
-//                toAdd.put("Avg Vote", record.get("avg_vote"));
-//                toAdd.put("Votes", record.get("votes"));
-//                toAdd.put("Budget", record.get("budget"));
-//                toAdd.put("USA Gross Income", record.get("usa_gross_income"));
-//                toAdd.put("Worldwide Gross Income", record.get("worlwide_gross_income"));
-//                toAdd.put("Metascore", record.get("metascore"));
-//                toAdd.put("Reviews From Users", record.get("reviews_from_users"));
-//                toAdd.put("Reviews From Critics", record.get("reviews_from_critics"));
-//                toReturn.put(id, toAdd);
-//                count++;
-//                if (count == 81273) {
-//                    jsonFile.write("\"" + id + "\"" + ":" + toAdd.toJSONString());
-//                } else {
-//                    jsonFile.write("\"" + id + "\"" + ":" + toAdd.toJSONString() + ",");
-//                }
-//            }
-//            jsonFile.write("}");
-//            jsonFile.flush();
-//            jsonFile.close();
-//            return toReturn;
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//    }
 }
