@@ -1,8 +1,12 @@
 import math
 import random
+from clustering.Word2Vec import vectorize
 
-def k_means_pp(string):
-    print(string)
+data=None
+
+def k_means_pp():
+    vectorized_data = vectorize(data)
+
     # centers = []
     # centers.append(data[0])
     # mean_costs = []
