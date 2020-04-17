@@ -11,7 +11,7 @@ public class Clustering {
             data.set(i, new PyString("hi"));
         }
         pi.set("data", data);
-        pi.exec("k_means_pp(\"Passed a string to Python!\")");
+        pi.exec("k_means_pp()");
     }
   }
 }
