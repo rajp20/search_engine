@@ -18,6 +18,7 @@ public class Server {
         context.setHandler(Server::handleSearch);
         System.out.println("Started Server...\n");
         server.start();
+        Clustering.test();
     }
 
     public static void handleSearch(HttpExchange exchange) throws IOException {
