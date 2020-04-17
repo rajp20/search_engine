@@ -12,12 +12,15 @@ import java.util.Map;
 
 public class Server {
 
+    public static SearchEngine searchEngine = new SearchEngine();
+
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 8000), 0);
         HttpContext context = server.createContext("/search");
         context.setHandler(Server::handleSearch);
         System.out.println("Started Server...\n");
         server.start();
+        Clustering.test();
     }
 
     public static void handleSearch(HttpExchange exchange) throws IOException {
@@ -27,15 +30,20 @@ public class Server {
         System.out.println("Search query: " + searchQuery);
         System.out.println();
 
+        String response;
+        if (searchQuery == null) {
+            response = "{Bad search.}";
+        } else {
+            response = searchEngine.search(searchQuery);
+        }
+
+//        System.out.println("JSON Response:");
+//        System.out.println(response);
+//        System.out.println();
+
         Headers headers = exchange.getResponseHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("Access-Control-Allow-Origin", "*");
-
-        String response = SearchEngine.search(searchQuery);
-
-        System.out.println("JSON Response:");
-        System.out.println(response);
-        System.out.println();
 
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();

@@ -14,95 +14,103 @@ import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import org.apache.commons.csv.*;
+
 public class SearchEngine {
 
-    public static String indexPath = "backend/index/";
+    public static String moviesIndex = "backend/movies_index/";
+    public static String namesIndex = "backend/names_index/";
 
-    public static String search(String query) {
-        galagoSearch(query);
-        JSONObject obj = new JSONObject();
-        obj.put("Result", "Hello World!");
+    public static String imdbMovieDatasetPath = "dataset/IMDb/imdb-extensive-dataset/IMDb_movies.csv";
 
-        return obj.toJSONString();
+    public JSONObject movieDataset;
+
+    public SearchEngine() {
+        movieDataset = loadCSV(imdbMovieDatasetPath);
     }
 
-    public static void galagoSearch(String query) {
-        System.out.println("Searching with galago...");
-//        System.out.println("Working Directory = " + System.getProperty("user.dir"));
+    public static JSONObject loadCSV(String path) {
+        JSONObject toReturn = new JSONObject();
+        try {
+            FileInputStream csvFile = new FileInputStream(path);
+            InputStreamReader input = new InputStreamReader(csvFile);
+            CSVParser parser = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(input);
+            for (CSVRecord record : parser) {
+                JSONObject toAdd = new JSONObject();
+                String id = record.get("imdb_title_id").substring(2);
+                toAdd.put("ID", id);
+                toAdd.put("Title", record.get("title"));
+                toAdd.put("Year", record.get("year"));
+                toAdd.put("Date Published", record.get("date_published"));
+                toAdd.put("Genre", record.get("genre"));
+                toAdd.put("Duration", record.get("duration"));
+                toAdd.put("Country", record.get("country"));
+                toAdd.put("Language", record.get("language"));
+                toAdd.put("Director", record.get("director"));
+                toAdd.put("Writer", record.get("writer"));
+                toAdd.put("Production Company", record.get("production_company"));
+                toAdd.put("Actors", record.get("actors"));
+                toAdd.put("Description", record.get("description"));
+                toAdd.put("Avg Vote", record.get("avg_vote"));
+                toAdd.put("Votes", record.get("votes"));
+                toAdd.put("Budget", record.get("budget"));
+                toAdd.put("USA Gross Income", record.get("usa_gross_income"));
+                toAdd.put("Worldwide Gross Income", record.get("worlwide_gross_income"));
+                toAdd.put("Metascore", record.get("metascore"));
+                toAdd.put("Reviews From Users", record.get("reviews_from_users"));
+                toAdd.put("Reviews From Critics", record.get("reviews_from_critics"));
+                toReturn.put(id, toAdd);
+            }
+            return toReturn;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public String search(String query) {
+        JSONObject searchedMoviesIDs = searchMovies(query);
+        JSONObject searchedMoviesData = getMovieDataFromIDs(searchedMoviesIDs);
+        return searchedMoviesData.toJSONString();
+    }
+
+    public JSONObject getMovieDataFromIDs(JSONObject movieIDs) {
+        System.out.println("Getting movie data...");
+        JSONObject toReturn = new JSONObject();
+        for (Object ID : movieIDs.keySet()) {
+            String id = (String) ID;
+            JSONObject toAdd = (JSONObject) movieDataset.get(id);
+            JSONObject movieIDData = (JSONObject) movieIDs.get(id);
+            toAdd.put("Rank", movieIDData.get("Rank"));
+            toAdd.put("Score", movieIDData.get("Score"));
+            toReturn.put(id, toAdd);
+        }
+        System.out.println("Done.\n");
+        return toReturn;
+    }
+
+    public static JSONObject searchMovies(String query) {
+        JSONObject toReturn = new JSONObject();
         try {
             Parameters queryParams = Parameters.create();
-            queryParams.set("index", indexPath);
+            queryParams.set("index", moviesIndex);
 
-
-//            queryParams.set("inputPath", inputPath);
-//            queryParams.set("filetype", "trectext");
             //- Set how many docs to return
-            queryParams.set("requested", 5);
+            queryParams.set("requested", 50);
 
             //- Do verbose output
             queryParams.set("verbose", true);
 
             //- Set the index to be searched
             Retrieval ret = RetrievalFactory.create(queryParams);
-            LocalRetrieval localRet = new LocalRetrieval(indexPath, queryParams);
 
-
-            FieldStatistics fs = ret.getCollectionStatistics("#lengths:part=lengths()");
-
-            int maxDocLength = 0;
-            String maxDocName = "";
-            for (long i = 0; i < fs.documentCount; i++) {
-                String name = localRet.getDocumentName(i);
-                int len = localRet.getDocumentLength(i);
-                if (len > maxDocLength) {
-                    maxDocLength = len;
-                    maxDocName = name;
-                }
-            }
-
-            //            LengthsIterator iterator = localRet.getDocumentLengthsIterator();
-//            ScoringContext sc = new ScoringContext();
-//            while (!iterator.isDone()) {
-//                sc.document = iterator.currentCandidate();
-//                if (iterator.hasMatch(sc)) {
-//                    String name = localRet.getDocumentName(sc.document);
-//                    int len = iterator.length(sc);
-//                    if (len > maxDocLength) {
-//                        maxDocName = name;
-//                        maxDocLength = len;
-//                    }
-//                }
-//                iterator.movePast(sc.document);
-//            }
-
-            System.out.println("Max Length of a Document");
-            System.out.println("Length: " + maxDocLength);
-            System.out.println("ID: " + maxDocName);
-
-            System.out.println("\nFieldStatistics...");
-            System.out.println("Field Name           : " + fs.fieldName);
-            System.out.println("Collection Length    : " + fs.collectionLength);
-            System.out.println("Document Count       : " + fs.documentCount);
-            System.out.println("Max Length           : " + fs.maxLength);
-            System.out.println("Min Length           : " + fs.minLength);
-            System.out.println("Ave Length           : " + fs.avgLength);
-            System.out.println("Non Zero Len Doc Cnt : " + fs.nonZeroLenDocCount);
-            System.out.println("First Doc ID: " + fs.firstDocId +
-                    "      Last Doc ID: " + fs.lastDocId);
-
-            IndexPartStatistics ips = ret.getIndexPartStatistics ("postings");
-            System.out.println ("\nIndexPartStatistics...");
-            System.out.println ("Part Name              : " + ips.partName);
-            System.out.println ("Collection Length      : " + ips.collectionLength);
-            System.out.println ("Highest Document Count : " + ips.highestDocumentCount);
-            System.out.println ("Vocabulary Count       : " + ips.vocabCount);
-            System.out.println ("Highest Frequency      : " + ips.highestFrequency);
-
-            //- Construct initial query.  Could be a simple or complex type.
-            String qText = query;
 
             //  Returned parsed query will be the root node of a query tree.
-            Node q = StructuredQuery.parse(qText);
+            Node q = StructuredQuery.parse(query);
             System.out.println("Parsed Query: " + q.toString());
 
             //- Transform the query in compliance to the many traversals that might
@@ -136,14 +144,26 @@ public class SearchEngine {
 
                     ret.getDocument(eid, dcs);
 
-                    System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
-                            rank, eid, iid, score, len);
-          }
+//                    System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
+//                            rank, eid, iid, score, len);
+
+                    JSONObject toAdd = new JSONObject();
+                    toAdd.put("Rank", rank);
+                    toAdd.put("ID", eid);
+                    toAdd.put("Score", score);
+
+                    toReturn.put(eid, toAdd);
+                }
 
                 System.out.println("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        return toReturn;
+    }
+
+    public static void searchActors(String query) {
+
     }
 }
