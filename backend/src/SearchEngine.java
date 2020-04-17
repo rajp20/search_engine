@@ -16,6 +16,7 @@ import org.lemurproject.galago.core.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 import org.apache.commons.csv.*;
@@ -65,6 +66,11 @@ public class SearchEngine {
                 toAdd.put("Reviews From Critics", record.get("reviews_from_critics"));
                 toReturn.put(id, toAdd);
             }
+            System.out.println("Writing to JSON file...");
+            FileWriter jsonFile = new FileWriter("dataset/IMDb/movies.json");
+            jsonFile.write(toReturn.toJSONString());
+            jsonFile.flush();
+            jsonFile.close();
             return toReturn;
         } catch (Exception ex) {
             ex.printStackTrace();
