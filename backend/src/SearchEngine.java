@@ -27,28 +27,70 @@ public class SearchEngine {
 
     public static String imdbMovieDatasetPath = "dataset/IMDb/imdb-extensive-dataset/IMDb_movies.csv";
 
+    public JSONObject movieDataset;
+
     public SearchEngine() {
-        CSVParser movieDataset = loadCSV(imdbMovieDatasetPath);
+        movieDataset = loadCSV(imdbMovieDatasetPath);
     }
 
-    public static CSVParser loadCSV(String path) {
+    public static JSONObject loadCSV(String path) {
+        JSONObject toReturn = new JSONObject();
         try {
             FileInputStream csvFile = new FileInputStream(path);
             InputStreamReader input = new InputStreamReader(csvFile);
             CSVParser parser = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(input);
-            return parser;
+            for (CSVRecord record : parser) {
+                JSONObject toAdd = new JSONObject();
+                String id = record.get("imdb_title_id").substring(2);
+                toAdd.put("ID", id);
+                toAdd.put("Title", record.get("title"));
+                toAdd.put("Year", record.get("year"));
+                toAdd.put("Date Published", record.get("date_published"));
+                toAdd.put("Genre", record.get("genre"));
+                toAdd.put("Duration", record.get("duration"));
+                toAdd.put("Country", record.get("country"));
+                toAdd.put("Language", record.get("language"));
+                toAdd.put("Director", record.get("director"));
+                toAdd.put("Writer", record.get("writer"));
+                toAdd.put("Production Company", record.get("production_company"));
+                toAdd.put("Actors", record.get("actors"));
+                toAdd.put("Description", record.get("description"));
+                toAdd.put("Avg Vote", record.get("avg_vote"));
+                toAdd.put("Votes", record.get("votes"));
+                toAdd.put("Budget", record.get("budget"));
+                toAdd.put("USA Gross Income", record.get("usa_gross_income"));
+                toAdd.put("Worldwide Gross Income", record.get("worlwide_gross_income"));
+                toAdd.put("Metascore", record.get("metascore"));
+                toAdd.put("Reviews From Users", record.get("reviews_from_users"));
+                toAdd.put("Reviews From Critics", record.get("reviews_from_critics"));
+                toReturn.put(id, toAdd);
+            }
+            return toReturn;
         } catch (Exception ex) {
             ex.printStackTrace();
+            return null;
         }
-        return null;
     }
 
-    public static String search(String query) {
-        JSONObject searchedMovies = searchMovies(query);
-        JSONObject obj = new JSONObject();
-        obj.put("Result", "Hello World!");
+    public String search(String query) {
+        JSONObject searchedMoviesIDs = searchMovies(query);
+        JSONObject searchedMoviesData = getMovieDataFromIDs(searchedMoviesIDs);
+        return searchedMoviesData.toJSONString();
+    }
 
-        return obj.toJSONString();
+    public JSONObject getMovieDataFromIDs(JSONObject movieIDs) {
+        System.out.println("Getting movie data...");
+        JSONObject toReturn = new JSONObject();
+        for (Object ID : movieIDs.keySet()) {
+            String id = (String) ID;
+            JSONObject toAdd = (JSONObject) movieDataset.get(id);
+            JSONObject movieIDData = (JSONObject) movieIDs.get(id);
+            toAdd.put("Rank", movieIDData.get("Rank"));
+            toAdd.put("Score", movieIDData.get("Score"));
+            toReturn.put(id, toAdd);
+        }
+        System.out.println("Done.\n");
+        return toReturn;
     }
 
     public static JSONObject searchMovies(String query) {
@@ -102,12 +144,15 @@ public class SearchEngine {
 
                     ret.getDocument(eid, dcs);
 
-                    System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
-                            rank, eid, iid, score, len);
+//                    System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
+//                            rank, eid, iid, score, len);
 
-                    toReturn.put("Rank", rank);
-                    toReturn.put("ID", eid);
-                    toReturn.put("Score", score);
+                    JSONObject toAdd = new JSONObject();
+                    toAdd.put("Rank", rank);
+                    toAdd.put("ID", eid);
+                    toAdd.put("Score", score);
+
+                    toReturn.put(eid, toAdd);
                 }
 
                 System.out.println("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());

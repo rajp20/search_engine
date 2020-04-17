@@ -30,15 +30,20 @@ public class Server {
         System.out.println("Search query: " + searchQuery);
         System.out.println();
 
+        String response;
+        if (searchQuery == null) {
+            response = "{Bad search.}";
+        } else {
+            response = searchEngine.search(searchQuery);
+        }
+
+//        System.out.println("JSON Response:");
+//        System.out.println(response);
+//        System.out.println();
+
         Headers headers = exchange.getResponseHeaders();
         headers.add("Content-Type", "application/json");
         headers.add("Access-Control-Allow-Origin", "*");
-
-        String response = searchEngine.search(searchQuery);
-
-        System.out.println("JSON Response:");
-        System.out.println(response);
-        System.out.println();
 
         exchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
