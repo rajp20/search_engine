@@ -12,8 +12,8 @@ Movies_and_TV.json
 *.idea/
 __pycache__/*
 
-*.jar
-*.txt
 *.json
+*.txt
+backend/galago
 
 dataset/*
