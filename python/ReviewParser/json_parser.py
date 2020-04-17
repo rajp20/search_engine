@@ -33,7 +33,8 @@ def main():
             data['title'] = movie_titles[data['asin']][0]
             data['imdbid'] = movie_titles[data['asin']][1]
             count += 1
-            file_out.write(f'{data}\n')
+            json_data = json.dumps(data)
+            file_out.write(f'{json_data}\n')
             print(data)
     print('\n DONE.')
     print(f'\nCreated {count} reviews on {len(movie_titles)} movies.')
