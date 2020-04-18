@@ -1,7 +1,7 @@
 *~
 
 build_logs
-backend.iml
+GalagoSearch.iml
 
 meta_Movies_and_TV.json
 movie_reviews.json
@@ -15,6 +15,8 @@ __pycache__/*
 
 *.json
 *.txt
-backend/galago
+GalagoSearch/galago/*
 
 dataset/*
+
+backend.jar
