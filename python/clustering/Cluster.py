@@ -7,6 +7,7 @@ from clustering.Word2Vec import vectorize
 
 def k_means_pp(data, k, visualize=False,d=2):
     point_data = json_to_matrix(data)
+    movie_id_index = 2
     if visualize:
         parse_data = [[] for i in range(len(point_data))]
         movie_ids = []
@@ -17,17 +18,26 @@ def k_means_pp(data, k, visualize=False,d=2):
                     movie_ids.append(column)
                 else:
                     row.append(column)
-            parse_data[point] = row
+            pca = PCA(n_components=1)
+            pca.fit(row)
+            v_row = pca.transform(row)
+            ex_v_row = []
+            for item in v_row:
+                ex_v_row.append(item[0])
+            parse_data[point] = ex_v_row
 
+        # print(parse_data)
         pca = PCA(n_components=d)
         pca.fit(parse_data)
         point_data = pca.transform(parse_data)
+        point_data = [list(i) for i in point_data]
         for point in range(len(point_data)):
             point_data[point].append(movie_ids[point])
+        movie_id_index = 1
 
 
     centers = []
-    centers.append(point_data[0][:len(point_data[0])-2])
+    centers.append(point_data[0][:len(point_data[0])-movie_id_index])
     mean_costs = []
     for i in range(1, k):
         V = 0.0
@@ -36,7 +46,7 @@ def k_means_pp(data, k, visualize=False,d=2):
         for point in point_data:
             min = math.inf
             for curr_center in centers:
-                curr_distance = euclidean_distance(point[:len(point)-2], curr_center[:len(curr_center)-2])
+                curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center[:len(curr_center)-movie_id_index])
                 if curr_distance < min:
                     min = curr_distance
             sum += min ** 2
@@ -54,7 +64,7 @@ def k_means_pp(data, k, visualize=False,d=2):
     for point in point_data:
         min = math.inf
         for curr_center in centers:
-            curr_distance = euclidean_distance(point[:len(point)-2], curr_center)
+            curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center)
             if curr_distance < min:
                 min = curr_distance
         sum += min ** 2
