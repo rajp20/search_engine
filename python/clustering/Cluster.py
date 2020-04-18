@@ -1,10 +1,30 @@
 import math
 import random
 import imp
+from matplotlib.pyplot import plot as plt
+from sklearn.decomposition import PCA
 from clustering.Word2Vec import vectorize
 
-def k_means_pp(data, k):
+def k_means_pp(data, k, visualize=False,d=2):
     point_data = json_to_matrix(data)
+    if visualize:
+        parse_data = []
+        movie_ids = []
+        for point in range(len(point_data)):
+            row = []
+            for column in point_data[point]:
+                if type(column) == str:
+                    movie_ids.append(column)
+                else:
+                    row.append(column)
+            parse_data.append([row])
+
+        pca = PCA(n_components=d)
+        pca.fit(parse_data)
+        point_data = pca.transform(parse_data)
+        for point in range(len(point_data)):
+            point_data[point].append(movie_ids[point])
+
 
     centers = []
     centers.append(point_data[0][:len(point_data[0])-2])
@@ -39,8 +59,14 @@ def k_means_pp(data, k):
                 min = curr_distance
         sum += min ** 2
     mean_costs.append(math.sqrt(sum / len(point_data)))
-    clusters = find_nearest_centers(point_data, data, centers, k)
-    return clusters
+    json_data, clusters = find_nearest_centers(point_data, data, centers, k)
+    if visualize:
+        plot_clusters(clusters)
+    return json_data
+
+def plot_clusters(data):
+    for point in data:
+        print()
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
     clusters = [[] for i in range(k)]
@@ -57,7 +83,7 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
         for point in clusters[cluster]:
             movieID = point[len(point)-1]
             json_data[movieID]["Cluster"] = cluster
-    return json_data
+    return json_data, clusters
 
 def euclidean_distance(point1, point2):
     sum = 0
