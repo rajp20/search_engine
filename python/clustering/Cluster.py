@@ -85,7 +85,7 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
         min = math.inf
         center = 0
         for i in range(len(centers)):
-            curr_distance = euclidean_distance(point, centers[i])
+            curr_distance = euclidean_distance(point[:len(point)-1], centers[i])
             if curr_distance < min:
                 min = curr_distance
                 center = i
