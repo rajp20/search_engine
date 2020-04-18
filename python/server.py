@@ -40,7 +40,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 def search(query):
     print("Searching...")
-    java_file = "backend.jar"
+    java_file = "GalagoSearch.jar"
     search_result = {}
     output = subprocess.check_output(['java', '-jar', java_file, query]).decode('utf-8')
     if "Fail" in output:

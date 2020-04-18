@@ -19,4 +19,5 @@ GalagoSearch/galago/*
 
 dataset/*
 
-backend.jar
+python/*.jar
+META-INF/
