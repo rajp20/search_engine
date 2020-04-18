@@ -1,12 +1,12 @@
-Apr 17, 2020 10:03:04 PM SearchEngine search
+Apr 17, 2020 11:10:51 PM SearchEngine search
 INFO: Searching...
-Apr 17, 2020 10:03:04 PM SearchEngine searchWithGalago
-INFO: Parsed Query: #root( #text:Clint() #text:Eastwood() )
-Apr 17, 2020 10:03:04 PM SearchEngine searchWithGalago
+Apr 17, 2020 11:10:51 PM SearchEngine searchWithGalago
+INFO: Parsed Query: #root( #text:Indiana() #text:Jones() )
+Apr 17, 2020 11:10:51 PM SearchEngine searchWithGalago
 INFO: 
-Transformed Query: #combine:w=1.0( #dirichlet:collectionLength=6715974:maximumCount=3:nodeFrequency=346:w=0.5( #lengths:document:part=lengths() #counts:Clint:part=postings.krovetz() ) #dirichlet:collectionLength=6715974:maximumCount=4:nodeFrequency=203:w=0.5( #lengths:document:part=lengths() #counts:Eastwood:part=postings.krovetz() ) )
-Apr 17, 2020 10:03:04 PM SearchEngine searchWithGalago
-INFO: Total documents containing the word 'Clint Eastwood': 50
-Apr 17, 2020 10:03:04 PM SearchEngine search
+Transformed Query: #combine:w=1.0( #dirichlet:collectionLength=171053146:maximumCount=382:nodeFrequency=2759:w=0.5( #lengths:document:part=lengths() #counts:Indiana:part=postings.krovetz() ) #dirichlet:collectionLength=171053146:maximumCount=440:nodeFrequency=20304:w=0.5( #lengths:document:part=lengths() #counts:Jones:part=postings.krovetz() ) )
+Apr 17, 2020 11:10:51 PM SearchEngine searchWithGalago
+INFO: Total documents containing the word 'Indiana Jones': 50
+Apr 17, 2020 11:10:51 PM SearchEngine search
 INFO: Done searching.
 
