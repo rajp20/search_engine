@@ -16,6 +16,7 @@ pretty_movie_data.json
 *.json
 *.txt
 GalagoSearch/galago/*
+GalagoSearch.log
 
 dataset/*
 
