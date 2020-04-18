@@ -1,12 +1,12 @@
-Apr 18, 2020 10:58:52 AM SearchEngine search
+Apr 18, 2020 12:49:02 PM SearchEngine search
 INFO: Searching...
-Apr 18, 2020 10:58:52 AM SearchEngine searchWithGalago
+Apr 18, 2020 12:49:03 PM SearchEngine searchWithGalago
 INFO: Parsed Query: #text:cars()
-Apr 18, 2020 10:58:52 AM SearchEngine searchWithGalago
+Apr 18, 2020 12:49:03 PM SearchEngine searchWithGalago
 INFO: 
 Transformed Query: #combine:w=1.0( #dirichlet:collectionLength=171053146:maximumCount=873:nodeFrequency=28340:w=1.0( #lengths:document:part=lengths() #counts:cars:part=postings.krovetz() ) )
-Apr 18, 2020 10:58:52 AM SearchEngine searchWithGalago
+Apr 18, 2020 12:49:03 PM SearchEngine searchWithGalago
 INFO: Total documents containing the word 'cars': 50
-Apr 18, 2020 10:58:52 AM SearchEngine search
+Apr 18, 2020 12:49:03 PM SearchEngine search
 INFO: Done searching.
 
