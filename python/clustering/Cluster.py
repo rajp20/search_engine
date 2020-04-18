@@ -7,7 +7,7 @@ def k_means_pp(data, k):
     point_data = json_to_matrix(data)
 
     centers = []
-    centers.append(point_data[0])
+    centers.append(point_data[0][:len(point_data[0])-2])
     mean_costs = []
     for i in range(1, k):
         V = 0.0
@@ -16,7 +16,7 @@ def k_means_pp(data, k):
         for point in point_data:
             min = math.inf
             for curr_center in centers:
-                curr_distance = euclidean_distance(point, curr_center)
+                curr_distance = euclidean_distance(point[:len(point)-2], curr_center[:len(curr_center)-2])
                 if curr_distance < min:
                     min = curr_distance
             sum += min ** 2
@@ -34,15 +34,15 @@ def k_means_pp(data, k):
     for point in point_data:
         min = math.inf
         for curr_center in centers:
-            curr_distance = euclidean_distance(point, curr_center)
+            curr_distance = euclidean_distance(point[:len(point)-2], curr_center)
             if curr_distance < min:
                 min = curr_distance
         sum += min ** 2
     mean_costs.append(math.sqrt(sum / len(point_data)))
-    clusters = find_nearest_centers(point_data, data, centers, k)
-    return centers, mean_costs
+    clusters = find_nearest_centers(point_data, centers, k)
+    return clusters
 
-def find_nearest_centers(point_data, json_data, centers, k=3):
+def find_nearest_centers(point_data, centers, k=3):
     clusters = [[] for i in range(k)]
     for point in point_data:
         min = math.inf
@@ -57,8 +57,7 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
 
 def euclidean_distance(point1, point2):
     sum = 0
-    for point in range(len(point1)):
-        t = point1[point]
+    for point in range(len(point1)-2):
         diff = (point1[point] - point2[point])**2
         for p in diff:
             sum += p
@@ -85,7 +84,8 @@ def json_to_matrix(json_data):
         row.append(prod_company)
         row.append(genre)
         row.append(avg_vote)
-
-        data.append(vectorize(row))
+        row = vectorize(row)
+        row.append(movie)
+        data.append(row)
 
     return data
