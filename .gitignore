@@ -19,4 +19,4 @@ GalagoSearch/galago/*
 
 dataset/*
 
-backend.jar
+python/*.jar
