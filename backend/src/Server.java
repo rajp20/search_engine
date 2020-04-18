@@ -3,12 +3,28 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.python.antlr.ast.Str;
 
 public class Server {
 
@@ -20,7 +36,6 @@ public class Server {
         context.setHandler(Server::handleSearch);
         System.out.println("Started Server...\n");
         server.start();
-        Clustering.test();
     }
 
     public static void handleSearch(HttpExchange exchange) throws IOException {
@@ -35,6 +50,9 @@ public class Server {
         } else {
             response = searchEngine.search(searchQuery);
         }
+
+        String clusteredResults = clusterResults(response);
+        System.out.println(clusteredResults);
 
 //        System.out.println("JSON Response:");
 //        System.out.println(response);
@@ -61,6 +79,32 @@ public class Server {
             }
         }
         return result;
+    }
+
+    public static String clusterResults(String results) throws IOException {
+        System.out.println("Making cluster request...");
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        String toReturn = "";
+        try {
+            HttpPost request = new HttpPost("http://localhost:8001/cluster");
+            StringEntity resultsEntity = new StringEntity(results, "UTF-8");
+            request.setEntity(resultsEntity);
+            request.setHeader("Content-Type", "application/json");
+
+            CloseableHttpResponse response = httpClient.execute(request);
+            try {
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    toReturn = EntityUtils.toString(entity);
+                }
+            } finally {
+                response.close();
+            }
+        } finally {
+            httpClient.close();
+        }
+        System.out.println("Done.\n");
+        return toReturn;
     }
 
 }
