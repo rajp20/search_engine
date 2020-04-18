@@ -54,7 +54,7 @@ def json_to_matrix(json_data):
         writer = json_data[movie]['Writer'].split(',')
         prod_company = [json_data[movie]['Production Company']]
         genre = json_data[movie]['Genre'].split()
-        avg_vote = float([json_data[movie]['Avg Vote']])
+        avg_vote = [json_data[movie]['Avg Vote']]
 
         data.append(description)
         data.append(title)
@@ -66,6 +66,5 @@ def json_to_matrix(json_data):
         data.append(avg_vote)
 
         data = vectorize(data)
-        data.append(avg_vote)
 
         return data
