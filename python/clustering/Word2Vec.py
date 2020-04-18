@@ -3,12 +3,12 @@ import numpy as np
 
 def vectorize(data):
     model = Word2Vec(data, size=100, min_count=1)
-    average_tweet_vectors = []
+    average_vectors = []
     for data_i in data:
         average_vector = get_average_vector(data_i, model)
-        average_tweet_vectors.append(average_vector)
-    print(average_tweet_vectors)
-    return average_tweet_vectors
+        average_vectors.append(average_vector)
+    print(average_vectors)
+    return average_vectors
 
 def get_average_vector(tweet, model):
     average_vector = []

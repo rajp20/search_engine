@@ -4,8 +4,10 @@ import json
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+from clustering.Cluster import k_means_pp
+
 print("Loading movie dataset...")
-with open('../dataset/movie_review.json') as f:
+with open('../dataset/movie_reviews.json') as f:
     movie_review_data = json.load(f)
 print("Done.\n")
 
@@ -30,6 +32,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         result_data = get_data_from_result_ids(result_ids)
 
         # BLAZE: Use result_data to do clustering. Call your clustering function here.
+        centers, costs = k_means_pp(result_data, 3)
 
         json_response = result_data
 

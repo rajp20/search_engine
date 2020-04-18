@@ -11,11 +11,12 @@ pretty_movie_data.json
 # Pycharm / Python
 .DS_Store
 *.idea/
-__pycache__/*
+*__pycache__/*
 
 *.json
 *.txt
 GalagoSearch/galago/*
+GalagoSearch.log
 
 dataset/*
 
