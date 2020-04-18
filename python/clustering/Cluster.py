@@ -4,8 +4,10 @@ import imp
 from matplotlib.pyplot import plot as plt
 from sklearn.decomposition import PCA
 from clustering.Word2Vec import vectorize
+import numpy as np
 
-def k_means_pp(data, k, visualize=False,d=2):
+
+def k_means_pp(data, k, visualize=False, d=2):
     point_data = json_to_matrix(data)
     movie_id_index = 2
     if visualize:
@@ -34,7 +36,6 @@ def k_means_pp(data, k, visualize=False,d=2):
         for point in range(len(point_data)):
             point_data[point].append(movie_ids[point])
         movie_id_index = 1
-
 
     centers = []
     centers.append(point_data[0][:len(point_data[0])-movie_id_index])
