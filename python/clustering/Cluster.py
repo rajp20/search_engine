@@ -8,7 +8,7 @@ from clustering.Word2Vec import vectorize
 def k_means_pp(data, k, visualize=False,d=2):
     point_data = json_to_matrix(data)
     if visualize:
-        parse_data = []
+        parse_data = [[] for i in range(len(point_data))]
         movie_ids = []
         for point in range(len(point_data)):
             row = []
@@ -17,7 +17,7 @@ def k_means_pp(data, k, visualize=False,d=2):
                     movie_ids.append(column)
                 else:
                     row.append(column)
-            parse_data.append([row])
+            parse_data[point] = row
 
         pca = PCA(n_components=d)
         pca.fit(parse_data)
