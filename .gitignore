@@ -6,6 +6,7 @@ backend.iml
 meta_Movies_and_TV.json
 movie_reviews.json
 Movies_and_TV.json
+pretty_movie_data.json
 
 # Pycharm / Python
 .DS_Store
