@@ -39,10 +39,10 @@ def k_means_pp(data, k):
                 min = curr_distance
         sum += min ** 2
     mean_costs.append(math.sqrt(sum / len(point_data)))
-    clusters = find_nearest_centers(point_data, centers, k)
+    clusters = find_nearest_centers(point_data, data, centers, k)
     return clusters
 
-def find_nearest_centers(point_data, centers, k=3):
+def find_nearest_centers(point_data, json_data, centers, k=3):
     clusters = [[] for i in range(k)]
     for point in point_data:
         min = math.inf
@@ -53,7 +53,11 @@ def find_nearest_centers(point_data, centers, k=3):
                 min = curr_distance
                 center = i
         clusters[center].append(point)
-    return clusters
+    for cluster in range(len(clusters)-1):
+        for point in clusters[cluster]:
+            movieID = point[len(point)-1]
+            json_data[movieID]["Cluster"] = cluster
+    return json_data
 
 def euclidean_distance(point1, point2):
     sum = 0
