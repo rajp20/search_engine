@@ -21,7 +21,7 @@ import java.util.logging.SimpleFormatter;
 
 public class SearchEngine {
 
-    public static String moviesIndex = "../dataset/movies_index/";
+    public static String moviesIndex = "../dataset/movies_index";
     public static String namesIndex = "../dataset/names_index/";
 
     public static String imdbMovieDatasetPath = "dataset/movie_review.json";
@@ -31,8 +31,8 @@ public class SearchEngine {
     public static void main(String[] args) {
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
         if (args.length != 1) {
-            System.out.println("Fail. Please pass in a query.");
-            return;
+          System.out.println("Fail. Please pass in a query.");
+           return;
         }
         FileHandler fh;
 
@@ -72,16 +72,34 @@ public class SearchEngine {
             //- Do verbose output
             queryParams.set("verbose", true);
 
+            //- Do casefold
+            queryParams.set("casefold", true);
+
+            //- Set to Relevance Model1
+            queryParams.set("relevanceModel", "org.lemurproject.galago.core.retrieval.prf.RelevanceModel1");
+
+            //- Add title and actors fields
+            String[] fields = {"title", "actors"};
+            queryParams.set("fields", fields);
+
+            //- Score set to jm
+            queryParams.set("scorer", "jm");
+
+            //- Add weights to fields
+            Weights weights = new Weights(0.8, 0.2);
+            queryParams.set("weights", String.valueOf(weights));
+
             //- Set the index to be searched
             Retrieval ret = RetrievalFactory.create(queryParams);
 
-
-            //  Returned parsed query will be the root node of a query tree.
-            Node q = StructuredQuery.parse(query);
-            logger.info("Parsed Query: " + q.toString());
-
             //- Transform the query in compliance to the many traversals that might
             //  (or might not) apply to the query.
+            String queryText = "#prms(" + query + ")";
+            Node q = StructuredQuery.parse(queryText);
+
+            //  Returned parsed query will be the root node of a query tree.
+            logger.info("Parsed Query: " + q.toString());
+
             Node transq = ret.transformQuery(q, Parameters.create());
             logger.info("\nTransformed Query: " + transq.toString());
 
