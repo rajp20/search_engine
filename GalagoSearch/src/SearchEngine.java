@@ -22,9 +22,6 @@ import java.util.logging.SimpleFormatter;
 public class SearchEngine {
 
     public static String moviesIndex = "../dataset/movies_index";
-    public static String namesIndex = "../dataset/names_index/";
-
-    public static String imdbMovieDatasetPath = "dataset/movie_review.json";
 
     public static Logger logger = Logger.getLogger("MyLog");
 
