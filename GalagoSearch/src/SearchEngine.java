@@ -159,7 +159,7 @@ public class SearchEngine {
                     if (Double.isInfinite(average)) {
                         average = -1000.0;
                     }
-
+                    logger.info(average.toString());
                     averages.add(average);
                     returnObjects.add(toReturn);
 
