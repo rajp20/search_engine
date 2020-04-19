@@ -158,6 +158,11 @@ public class SearchEngine {
                             .mapToDouble(p -> p.score)
                             .average()
                             .orElse(0);
+
+                    if (Double.isInfinite(average)) {
+                        average = -1000.0;
+                    }
+
                     averages.add(average);
                     returnObjects.add(toReturn);
 
