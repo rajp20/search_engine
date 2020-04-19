@@ -30,10 +30,10 @@ public class SearchEngine {
 
     public static void main(String[] args) {
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
-       // if (args.length != 1) {
-         //   System.out.println("Fail. Please pass in a query.");
-        //    return;
-       // }
+        if (args.length != 1) {
+          System.out.println("Fail. Please pass in a query.");
+           return;
+        }
         FileHandler fh;
 
         try {
@@ -49,7 +49,7 @@ public class SearchEngine {
             e.printStackTrace();
         }
 
-        String results = search("star wars");
+        String results = search(args[0]);
         System.out.println(results);
     }
 
