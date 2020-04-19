@@ -1,10 +1,8 @@
 import math
 import random
-import imp
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from clustering.Word2Vec import vectorize
-import numpy as np
 
 
 def k_means_pp(data, k, visualize=False, d=2):
@@ -75,6 +73,7 @@ def k_means_pp(data, k, visualize=False, d=2):
         plot_clusters(clusters)
     return json_data
 
+
 def plot_clusters(data):
     colors = ['#fa675c', '#2fc9f7', '#00c41a', '#bc1fff', '#ff931f']
     for cluster in range(len(data)):
@@ -86,7 +85,8 @@ def plot_clusters(data):
             y.append(curr_point[1])
         plt.scatter(x, y, c=[colors[cluster]], alpha=0.5, label=f'Cluster {cluster + 1}')
     plt.title("Post query movie groupings")
-    plt.show()
+    # plt.show()
+    plt.savefig('post_query_movie_groupings.jpg')
 
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
@@ -100,11 +100,12 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
                 min = curr_distance
                 center = i
         clusters[center].append(point)
-    for cluster in range(len(clusters)-1):
+    for cluster in range(len(clusters)):
         for point in clusters[cluster]:
             movieID = point[len(point)-1]
             json_data[movieID]["Cluster"] = cluster
     return json_data, clusters
+
 
 def euclidean_distance(point1, point2):
     sum = 0
@@ -123,14 +124,14 @@ def json_to_matrix(json_data):
     data = []
     for movie in json_data:
         row = []
-        description = json_data[movie]['Description'].split()
-        title = json_data[movie]['Title'].split()
-        actors = json_data[movie]['Actors'].split(',')
-        director = json_data[movie]['Director'].split(',')
-        writer = json_data[movie]['Writer'].split(',')
-        prod_company = [json_data[movie]['Production Company']]
-        genre = json_data[movie]['Genre'].split()
-        avg_vote = [json_data[movie]['Avg Vote']]
+        description = json_data[movie]['Description'].split() if len(json_data[movie]['Description']) > 0 else [" "]
+        title = json_data[movie]['Title'].split() if len(json_data[movie]['Title']) > 0 else [" "]
+        actors = json_data[movie]['Actors'].split(',') if len(json_data[movie]['Actors']) > 0 else [" "]
+        director = json_data[movie]['Director'].split(',') if len(json_data[movie]['Director']) > 0 else [" "]
+        writer = json_data[movie]['Writer'].split(',') if len(json_data[movie]['Writer']) > 0 else [" "]
+        prod_company = [json_data[movie]['Production Company']] if len(json_data[movie]['Production Company']) > 0 else [" "]
+        genre = json_data[movie]['Genre'].split() if len(json_data[movie]['Genre']) > 0 else [" "]
+        avg_vote = [json_data[movie]['Avg Vote']] if len(json_data[movie]['Avg Vote']) > 0 else [" "]
 
         row.append(description)
         row.append(title)
