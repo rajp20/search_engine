@@ -59,6 +59,41 @@ body {
     background: #990000;
 }
 
+thead tr {
+    border-bottom: none;
+}
+
+th {
+    text-align: left;
+    background: #ffb3b3;
+    padding: 7px 5px 5px 7px;
+}
+
+th:hover {
+    cursor: pointer;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+tr {
+    height: 23px;
+    border-bottom: 1pt solid rgba(0, 0, 0, 0.25);
+}
+
+td {
+    padding: 5px 5px 5px 7px;
+}
+
+td:hover {
+    cursor: pointer;
+}
+
+.movieTitles {
+
+}
+
 body div {
     /*border: 1px solid black;*/
 }

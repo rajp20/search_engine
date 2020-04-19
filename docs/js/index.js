@@ -9,7 +9,10 @@ $("#search_bar_input").on("keyup", function (event) {
 })
 
 function handle_search_response(data) {
-  console.log(data)
+  console.log("Received list from server.")
+  resultsView.updateList(Object.values(data))
+  resultsView.sortAscending('Rank')
+  resultsView.updateTable()
 }
 
 function search_request() {

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
 
     <!-- D3 -->
     <script src="https://d3js.org/d3.v5.js"></script>
@@ -28,7 +29,17 @@
     </div>
 </div>
 <div id="search_results_container" class="flex_row">
-    <div id="results"></div>
+    <div id="results">
+        <table>
+            <thead>
+            <tr>
+                <th id="rankHeader"><i class="fas fa-sort"></i>Rank</th>
+                <th id="movieTitleHeader"><i class="fas fa-sort"></i>Movie Title</th>
+            </tr>
+            </thead>
+            <tbody id="resultsTBody"></tbody>
+        </table>
+    </div>
     <div id="clusters"></div>
 </div>
 </body>
