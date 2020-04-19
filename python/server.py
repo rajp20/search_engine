@@ -5,6 +5,7 @@ import json
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from clustering.Cluster import k_means_pp
+from clustering.Cluster import misra_gries
 
 print("Loading movie dataset...")
 with open('../dataset/movie_reviews.json') as f:
@@ -33,8 +34,8 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         # BLAZE: Use result_data to do clustering. Call your clustering function here.
         clusters = k_means_pp(result_data, 3, visualize=True)
-
-        json_response = clusters
+        clusters_mg = misra_gries(clusters, 10)
+        json_response = clusters_mg
 
         json_response = bytes(json.dumps(json_response), 'utf-8')
         self._set_response()
