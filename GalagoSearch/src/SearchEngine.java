@@ -15,6 +15,8 @@ import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -28,8 +30,8 @@ public class SearchEngine {
     public static void main(String[] args) {
         // System.out.println("Working Directory = " + System.getProperty("user.dir"));
         if (args.length != 1) {
-          System.out.println("Fail. Please pass in a query.");
-           return;
+            System.out.println("Fail. Please pass in a query.");
+            return;
         }
         FileHandler fh;
 
@@ -58,91 +60,118 @@ public class SearchEngine {
     }
 
     public static JSONObject searchWithGalago(String query, String indexPath) {
-        JSONObject toReturn = new JSONObject();
-        try {
-            Parameters queryParams = Parameters.create();
-            queryParams.set("index", indexPath);
+        List<JSONObject> returnObjects = new ArrayList<>();
+        List<Double> averages = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            JSONObject toReturn = new JSONObject();
+            try {
+                Parameters queryParams = Parameters.create();
+                queryParams.set("index", indexPath);
 
-            //- Set how many docs to return
-            queryParams.set("requested", 50);
+                //- Set how many docs to return
+                queryParams.set("requested", 50);
 
-            //- Do verbose output
-            queryParams.set("verbose", true);
+                //- Do verbose output
+                queryParams.set("verbose", true);
 
-            //- Do casefold
-            queryParams.set("casefold", true);
+                //- Do casefold
+                queryParams.set("casefold", true);
 
-            //- Set to Relevance Model1
-            queryParams.set("relevanceModel", "org.lemurproject.galago.core.retrieval.prf.RelevanceModel1");
+                //- Set to Relevance Model1
+                queryParams.set("relevanceModel", "org.lemurproject.galago.core.retrieval.prf.RelevanceModel1");
 
-            //- Add title and actors fields
-            String[] fields = {"title", "actors"};
-            queryParams.set("fields", fields);
+                //- Add title and actors fields
+                String[] fields = {"title", "actors"};
+                queryParams.set("fields", fields);
 
-            //- Score set to jm
-            queryParams.set("scorer", "jm");
+                //- Score set to jm
+                queryParams.set("scorer", "jm");
 
-            //- Add weights to fields
-            Weights weights = new Weights(0.8, 0.2);
-            queryParams.set("weights", String.valueOf(weights));
+                //- Add weights to fields
+                Parameters weightParams = Parameters.create();
+                if(i == 0) {
+                    weightParams.set("title", 0.8);
+                    weightParams.set("actors", 0.2);
+                    queryParams.set("weights", weightParams);
+                }
+                else {
+                    weightParams.set("title", 0.2);
+                    weightParams.set("actors", 0.8);
+                    queryParams.set("weights", String.valueOf(weightParams));
+                }
 
-            //- Set the index to be searched
-            Retrieval ret = RetrievalFactory.create(queryParams);
+                //- Set the index to be searched
+                Retrieval ret = RetrievalFactory.create(queryParams);
 
-            //- Transform the query in compliance to the many traversals that might
-            //  (or might not) apply to the query.
-            String queryText = "#prms(" + query + ")";
-            Node q = StructuredQuery.parse(queryText);
+                //- Transform the query in compliance to the many traversals that might
+                //  (or might not) apply to the query.
+                String queryText = "#prms(" + query + ")";
+                Node q = StructuredQuery.parse(queryText);
 
-            //  Returned parsed query will be the root node of a query tree.
-            logger.info("Parsed Query: " + q.toString());
+                //  Returned parsed query will be the root node of a query tree.
+                logger.info("Parsed Query: " + q.toString());
 
-            Node transq = ret.transformQuery(q, Parameters.create());
-            logger.info("\nTransformed Query: " + transq.toString());
+                Node transq = ret.transformQuery(q, Parameters.create());
+                logger.info("\nTransformed Query: " + transq.toString());
 
-            //- Do the Retrieval
-            Results results = ret.executeQuery(transq, queryParams);
+                //- Do the Retrieval
+                Results results = ret.executeQuery(transq, queryParams);
 
-            // View Results or inform search failed.
-            if (results.scoredDocuments.isEmpty()) {
-                logger.info("Search failed. Nothing retrieved.");
-                toReturn.put("Stats", "No search results.");
-            } else {
-                //- The DocumentComponents object stores information about a
-                //  document.
-                DocumentComponents dcs = new DocumentComponents();
+                // View Results or inform search failed.
+                if (results.scoredDocuments.isEmpty()) {
+                    logger.info("Search failed. Nothing retrieved.");
+                    toReturn.put("Stats", "No search results.");
+                } else {
+                    //- The DocumentComponents object stores information about a
+                    //  document.
+                    DocumentComponents dcs = new DocumentComponents();
 
-                for (ScoredDocument sd : results.scoredDocuments) {
-                    int rank = sd.rank;
+                    for (ScoredDocument sd : results.scoredDocuments) {
+                        int rank = sd.rank;
 
-                    //- internal ID (indexing sequence number)of document
-                    long   iid = sd.document;
-                    double score = sd.score;
+                        //- internal ID (indexing sequence number)of document
+                        long iid = sd.document;
+                        double score = sd.score;
 
-                    //- Get the external ID (ID in the text) of the document.
-                    String eid = ret.getDocumentName(sd.document);
+                        //- Get the external ID (ID in the text) of the document.
+                        String eid = ret.getDocumentName(sd.document);
 
-                    //- Get document length based on the internal ID.
-                    int len = ret.getDocumentLength(sd.document);
+                        //- Get document length based on the internal ID.
+                        int len = ret.getDocumentLength(sd.document);
 
-                    ret.getDocument(eid, dcs);
+                        ret.getDocument(eid, dcs);
 
 //                    System.out.printf ("Rank : %d \t ID: %s [%d] \t Score: %f \t Len: %d \n",
 //                            rank, eid, iid, score, len);
 
-                    JSONObject toAdd = new JSONObject();
-                    toAdd.put("Rank", rank);
-                    toAdd.put("ID", eid);
-                    toAdd.put("Score", score);
+                        JSONObject toAdd = new JSONObject();
+                        toAdd.put("Rank", rank);
+                        toAdd.put("ID", eid);
+                        toAdd.put("Score", score);
 
-                    toReturn.put(eid, toAdd);
+                        toReturn.put(eid, toAdd);
+                    }
+                    Double average = results.scoredDocuments.stream()
+                            .mapToDouble(p -> p.score)
+                            .average()
+                            .orElse(0);
+
+                    if (Double.isInfinite(average)) {
+                        average = -1000.0;
+                    }
+
+                    averages.add(average);
+                    returnObjects.add(toReturn);
+
+                    logger.info("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());
                 }
-
-                logger.info("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-        return toReturn;
+        if (averages.get(0) > averages.get(1)) {
+            return returnObjects.get(0);
+        }
+        return returnObjects.get(1);
     }
 }
