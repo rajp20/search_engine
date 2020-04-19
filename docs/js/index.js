@@ -56,7 +56,6 @@ function reviewButtonClick(id) {
 }
 
 function getReviewHTML(id) {
-  console.log(id)
   let reviews = receivedData[id].Reviews
   let htmlToAdd = ""
   reviews.forEach((rev) => {
