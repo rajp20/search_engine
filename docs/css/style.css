@@ -117,6 +117,7 @@ body div {
 
 .description {
     width: 40vw;
+    padding-top: 8px;
 }
 
 .description p {
