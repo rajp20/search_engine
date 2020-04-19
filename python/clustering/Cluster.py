@@ -73,6 +73,7 @@ def k_means_pp(data, k, visualize=False, d=2):
         plot_clusters(clusters)
     return json_data
 
+
 def plot_clusters(data):
     colors = ['#fa675c', '#2fc9f7', '#00c41a', '#bc1fff', '#ff931f']
     for cluster in range(len(data)):
@@ -84,7 +85,8 @@ def plot_clusters(data):
             y.append(curr_point[1])
         plt.scatter(x, y, c=[colors[cluster]], alpha=0.5, label=f'Cluster {cluster + 1}')
     plt.title("Post query movie groupings")
-    plt.show()
+    # plt.show()
+    plt.savefig('post_query_movie_groupings.jpg')
 
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
@@ -103,6 +105,7 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
             movieID = point[len(point)-1]
             json_data[movieID]["Cluster"] = cluster
     return json_data, clusters
+
 
 def euclidean_distance(point1, point2):
     sum = 0
