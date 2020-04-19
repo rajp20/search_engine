@@ -32,7 +32,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         result_data = get_data_from_result_ids(result_ids)
 
         # BLAZE: Use result_data to do clustering. Call your clustering function here.
-        # clusters = k_means_pp(result_data, 3, visualize=True)
+        clusters = k_means_pp(result_data, 3, visualize=True)
 
         json_response = result_data
 

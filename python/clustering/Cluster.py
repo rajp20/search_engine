@@ -38,7 +38,7 @@ def k_means_pp(data, k, visualize=False, d=2):
         movie_id_index = 1
 
     centers = []
-    centers.append(point_data[0][:len(point_data[0])-movie_id_index])
+    centers.append(point_data[0])
     mean_costs = []
     for i in range(1, k):
         V = 0.0
@@ -109,12 +109,12 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
 def euclidean_distance(point1, point2):
     sum = 0
     if len(point1) > 2:
-        for point in range(len(point1)-1):
+        for point in range(len(point1)):
             diff = (point1[point] - point2[point])**2
             for p in diff:
                 sum += p
     else:
-        for point in range(len(point1)-1):
+        for point in range(len(point1)):
             diff = (point1[point] - point2[point])**2
             sum += diff
     return math.sqrt(sum)
