@@ -1,10 +1,8 @@
 import math
 import random
-import imp
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from clustering.Word2Vec import vectorize
-import numpy as np
 
 
 def k_means_pp(data, k, visualize=False, d=2):
@@ -100,7 +98,7 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
                 min = curr_distance
                 center = i
         clusters[center].append(point)
-    for cluster in range(len(clusters)-1):
+    for cluster in range(len(clusters)):
         for point in clusters[cluster]:
             movieID = point[len(point)-1]
             json_data[movieID]["Cluster"] = cluster
