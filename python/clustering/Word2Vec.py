@@ -7,7 +7,6 @@ def vectorize(data):
     for data_i in data:
         average_vector = get_average_vector(data_i, model)
         average_vectors.append(average_vector)
-    # print(average_vectors)
     return average_vectors
 
 def get_average_vector(tweet, model):
