@@ -5,7 +5,8 @@
     <title>Movie Search Engine</title>
 
     <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato&display=swap">
@@ -24,17 +25,57 @@
 <div id="search_bar_container" class="flex_column">
     <p>Search Movies</p>
     <div class="flex_row">
-        <input id="search_bar_input" type="text" class="search_bar" autocomplete="off" placeholder="Search movies and movie reviews..." />
+        <input id="search_bar_input" type="text" class="search_bar" autocomplete="off"
+               placeholder="Search movies and movie reviews..."/>
         <button id="search_bar_button" class="fa fa-search" onclick="search_request()"></button>
     </div>
 </div>
 <div id="search_results_container" class="flex_row">
     <div id="results">
+        <div class="flex_column expanded">
+            <div class="flex_row">
+                <div class="flex_row metaData">
+                    <div>
+                        <p><b>Director:</b> Henry Cornelius</p>
+                        <p><b>Writer:</b> William Rose</p>
+                        <p><b>Country:</b> UK</p>
+                        <p><b>Genre:</b> Comedy</p>
+                        <p><b>Duration:</b> 86 minutes</p>
+                    </div>
+                    <div>
+                        <p><b>Date Published:</b> 1953-08-14</p>
+                        <p><b>Language:</b> English</p>
+                        <p><b>Production</b> Company: Sirius Productions</p>
+                        <p><b>USA Gross Income:</b></p>
+                        <p><b>Worldwide Gross Income:</b></p>
+                    </div>
+                </div>
+                <div class="description">
+                    <b>Description:</b>
+                    <p>
+                        "It's time for the annual London to Brighton antique car rally, and Alan McKim and Ambrose
+                        Claverhouse are not going to let their friendship stop them from trying to humiliate each other.
+                        ..."
+                </div>
+            </div>
+            <div class="flex_row reviews">
+                <div>
+                    <p><b>Reviews From Users:</b> 51.0</p>
+                    <button id="test" class="reviewsButton">Reviews</button>
+                </div>
+                <div>
+                    <p><b>Reviews From Critics:</b> 19</p>
+                </div>
+            </div>
+        </div>
         <table>
             <thead>
             <tr>
                 <th id="rankHeader"><i class="fas fa-sort"></i>Rank</th>
                 <th id="movieTitleHeader"><i class="fas fa-sort"></i>Movie Title</th>
+                <th id="actorsHeader">Actors</th>
+                <th id="yearHeader"><i class="fas fa-sort"></i>Year</th>
+                <th id="avgVoteHeader"><i class="fas fa-sort"></i>Avg. Vote</th>
             </tr>
             </thead>
             <tbody id="resultsTBody"></tbody>

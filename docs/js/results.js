@@ -3,11 +3,14 @@ class Results {
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
-    this.svgWidth = (vw - 16) * 0.5
+    this.svgWidth = (vw - 16) * 0.7
     this.svgHeight = vh - 200
 
-    this.rankWidth = this.svgWidth * 0.07
-    this.movieTitleWidth = this.svgWidth * 0.40
+    this.rankWidth = this.svgWidth * 0.04
+    this.movieTitleWidth = this.svgWidth * 0.25
+    this.actorsWidth = this.svgWidth * 0.58
+    this.yearWidth = this.svgWidth * 0.06
+    this.avgVoteWidth = this.svgWidth * 0.07
 
     this.toggleSort = true
 
@@ -25,6 +28,15 @@ class Results {
 
     d3.select('#movieTitleHeader')
       .style('width', this.movieTitleWidth + 'px')
+
+    d3.select('#actorsHeader')
+      .style('width', this.actorsWidth + 'px')
+
+    d3.select('#yearHeader')
+      .style('width', this.yearWidth + 'px')
+
+    d3.select('#avgVoteHeader')
+      .style('width', this.avgVoteWidth + 'px')
 
     let that = this;
 
@@ -47,6 +59,20 @@ class Results {
             that.sortAscending('Rank')
           } else {
             that.sortDescending('Rank')
+          }
+        }
+        if (this.textContent.includes('Year')) {
+          if (that.toggleSort) {
+            that.sortAscending('Year')
+          } else {
+            that.sortDescending('Year')
+          }
+        }
+        if (this.textContent.includes('Avg. Vote')) {
+          if (that.toggleSort) {
+            that.sortAscending('Avg Vote')
+          } else {
+            that.sortDescending('Avg Vote')
           }
         }
         that.toggleSort = !that.toggleSort
@@ -84,15 +110,37 @@ class Results {
 
     // Create table columns
     let td = tr.selectAll('td').data((d) => {
+      if (d.ID === "expanded") {
+        d.type = d.ID
+        d.field = d.ID
+        return [d]
+      }
       let rank = {
         value: d.Rank,
-        type: "rank"
+        field: "rank",
+        type: "text"
       }
       let movieTitle = {
         value: d.Title,
-        type: "title"
+        field: "title",
+        type: "text"
       }
-      return [rank, movieTitle]
+      let actors = {
+        value: d.Actors,
+        field: "actors",
+        type: "text"
+      }
+      let year = {
+        value: parseInt(d.Year),
+        field: "year",
+        type: "text"
+      }
+      let avgVote = {
+        value: parseFloat(d['Avg Vote']),
+        field: "avgVote",
+        type: "text"
+      }
+      return [rank, movieTitle, actors, year, avgVote]
     })
 
     let newTd = td.enter()
@@ -103,15 +151,36 @@ class Results {
 
     td = newTd.merge(td)
 
+    // Reset the colspan back to 1 and the background color
+    td
+      .attr('colspan', 1)
+      // .classed('expanded', false)
+
+    let expandedCol = td.filter((d) => {
+      return d.type === "expanded"
+    })
+
+    // Set the expanded col to span all columns
+    expandedCol
+      .attr('colspan', 5)
+      // .classed('expanded', true)
+
+    expandedCol
+      .text("HEELO")
+
     let movieTitleCols = td.filter((d) => {
-      return d.type === "title"
+      return d.field === "title"
     })
 
     movieTitleCols
       .classed('movieTitles', true)
       .style('width', this.movieTitleWidth + 'px')
 
-    td
+    let textCols = td.filter((d) => {
+      return d.type === "text"
+    })
+
+    textCols
       .text(d => d.value)
   }
 

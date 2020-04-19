@@ -1,7 +1,7 @@
 import math
 import random
 import imp
-from matplotlib.pyplot import plot as plt
+import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from clustering.Word2Vec import vectorize
 import numpy as np
@@ -47,7 +47,7 @@ def k_means_pp(data, k, visualize=False, d=2):
         for point in point_data:
             min = math.inf
             for curr_center in centers:
-                curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center[:len(curr_center)-movie_id_index])
+                curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center)
                 if curr_distance < min:
                     min = curr_distance
             sum += min ** 2
@@ -76,8 +76,18 @@ def k_means_pp(data, k, visualize=False, d=2):
     return json_data
 
 def plot_clusters(data):
-    for point in data:
-        print()
+    colors = ['#fa675c', '#2fc9f7', '#00c41a', '#bc1fff', '#ff931f']
+    for cluster in range(len(data)):
+        x = []
+        y = []
+        for point in range(len(data[cluster])):
+            curr_point = data[cluster][point]
+            x.append(curr_point[0])
+            y.append(curr_point[1])
+        plt.scatter(x, y, c=[colors[cluster]], alpha=0.5, label=f'Cluster {cluster + 1}')
+    plt.title("Post query movie groupings")
+    plt.show()
+
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
     clusters = [[] for i in range(k)]
@@ -98,10 +108,15 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
 
 def euclidean_distance(point1, point2):
     sum = 0
-    for point in range(len(point1)-2):
-        diff = (point1[point] - point2[point])**2
-        for p in diff:
-            sum += p
+    if len(point1) > 2:
+        for point in range(len(point1)-1):
+            diff = (point1[point] - point2[point])**2
+            for p in diff:
+                sum += p
+    else:
+        for point in range(len(point1)-1):
+            diff = (point1[point] - point2[point])**2
+            sum += diff
     return math.sqrt(sum)
 
 def json_to_matrix(json_data):
