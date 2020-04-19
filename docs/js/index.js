@@ -39,6 +39,11 @@ function reviewButtonClick(id) {
   if (receivedData === null) {
     return
   }
+  let idString = id.toString()
+  while (idString.length != 7) {
+    idString = '0' + idString
+  }
+  id = idString
   let modelContent = document.getElementById('modal-content-id')
   let htmlToAdd = '<span id="close-id" class="close">&times;</span>'
   htmlToAdd += getReviewHTML(id)
@@ -51,6 +56,7 @@ function reviewButtonClick(id) {
 }
 
 function getReviewHTML(id) {
+  console.log(id)
   let reviews = receivedData[id].Reviews
   let htmlToAdd = ""
   reviews.forEach((rev) => {

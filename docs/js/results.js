@@ -202,7 +202,7 @@ class Results {
       if (i === j) {
         let toInsert = Object.assign({}, this.data[i])
         toInsert.ID = "expanded"
-        toInsert.id = this.data[i].ID
+        toInsert.id = `${this.data[i].ID}`
         updatedData.push(toInsert)
       }
     }
