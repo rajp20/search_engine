@@ -91,11 +91,7 @@ td:hover {
 }
 
 .movieTitles {
-
-}
-
-body div {
-    /*border: 1px solid black;*/
+    font-weight: bold;
 }
 
 .expanded {
@@ -104,11 +100,11 @@ body div {
 }
 
 .metaData {
-    width: 60vw;
+    width: 55%;
 }
 
 .metaData div {
-    padding: 0 100px 0 10px;
+    padding: 0 50px 0 10px;
 }
 
 .metaData p {
@@ -116,8 +112,9 @@ body div {
 }
 
 .description {
-    width: 40vw;
-    padding-top: 8px;
+    /*width: 500px;*/
+    width: 45%;
+    padding: 8px;
 }
 
 .description p {
@@ -125,11 +122,11 @@ body div {
 }
 
 .reviews {
-    width: 60vw;
+    width: 55%;
 }
 
 .reviews p {
-    margin: 16px 0 8px 0;
+    margin: 8px 0 8px 0;
 }
 
 .reviews div {
@@ -147,4 +144,52 @@ body div {
 
 .reviewsButton:hover {
     background: #990000;
+}
+
+.no_padding {
+    padding: 0;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 50px; /* Location of the box */
+    padding-bottom: 50px;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 90%; /* Full height */
+    overflow: scroll; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.modal-content p {
+    margin: 8px 0 8px 0;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }

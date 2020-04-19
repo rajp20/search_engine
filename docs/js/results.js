@@ -154,7 +154,7 @@ class Results {
     // Reset the colspan back to 1 and the background color
     td
       .attr('colspan', 1)
-      // .classed('expanded', false)
+      .classed('no_padding', false)
 
     let expandedCol = td.filter((d) => {
       return d.type === "expanded"
@@ -163,10 +163,12 @@ class Results {
     // Set the expanded col to span all columns
     expandedCol
       .attr('colspan', 5)
-      // .classed('expanded', true)
+      .classed('no_padding', true)
 
     expandedCol
-      .text("HEELO")
+      .html((d) => {
+        return this.movieMoreInfoRender(d)
+      })
 
     let movieTitleCols = td.filter((d) => {
       return d.field === "title"
@@ -200,6 +202,7 @@ class Results {
       if (i === j) {
         let toInsert = Object.assign({}, this.data[i])
         toInsert.ID = "expanded"
+        toInsert.id = this.data[i].ID
         updatedData.push(toInsert)
       }
     }
@@ -237,4 +240,52 @@ class Results {
     });
   }
 
+  movieMoreInfoRender(d) {
+    let htmlRender = `<div class="flex_column expanded">
+      <div class="flex_row">
+      <div class="flex_row metaData">
+      <div>
+      <p><b>Director:</b> ${d.Director}</p>
+      <p><b>Writer:</b> ${d.Writer}</p>
+      <p><b>Country:</b> ${d.Country}</p>
+      <p><b>Genre:</b> ${d.Genre}</p>
+      <p><b>Duration:</b> ${d.Duration}</p>
+      </div>
+      <div>
+      <p><b>Date Published:</b> ${d['Date Published']}</p>
+      <p><b>Language:</b> ${d.Language}</p>`
+
+    if (d['Production Company'] !== "") {
+      htmlRender += `<p><b>Production</b> Company: ${d['Production Company']}</p>`
+    }
+    if (d['USA Gross Income'] !== "") {
+      htmlRender += `<p><b>USA Gross Income:</b> ${d['USA Gross Income']}</p>`
+    }
+    if (d['Worldwide Gross Income'] !== "") {
+      htmlRender += `<p><b>Worldwide Gross Income:</b> ${d['Worldwide Gross Income']}</p>`
+    }
+
+    htmlRender += `</div></div><div class="description"><b>Description:</b>`
+
+    if (d.Description !== "") {
+      htmlRender += `<p>${d.Description}</p>`
+    }
+
+    htmlRender += `</div>
+      </div>
+      <div class="flex_row reviews">
+        <div>`
+
+    if (d['Reviews From Critics'] !== "") {
+      htmlRender += `<p><b>Reviews From Users:</b> ${parseInt(d['Reviews From Critics'])}</p>`
+    }
+    if (d['Reviews From Users'] !== "") {
+      htmlRender += `<p><b>Reviews From Critics:</b> ${parseInt(d['Reviews From Users'])}</p>`
+    }
+    if (d.Reviews.length !== 0) {
+      htmlRender += `<button class="reviewsButton" onclick="reviewButtonClick(${d.id})">Reviews</button>`
+    }
+    htmlRender += `</div></div></div>`
+    return htmlRender
+  }
 }
