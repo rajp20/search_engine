@@ -13,6 +13,8 @@ pretty_movie_data.json
 *.idea/
 *__pycache__/*
 
+__pycache__
+
 *.json
 *.txt
 GalagoSearch/galago/*
