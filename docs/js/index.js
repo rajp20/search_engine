@@ -10,6 +10,7 @@ $("#search_bar_input").on("keyup", function (event) {
 
 function handle_search_response(data) {
   console.log("Received list from server.")
+  console.log(data)
   resultsView.updateList(Object.values(data))
   resultsView.sortAscending('Rank')
   resultsView.updateTable()
@@ -40,3 +41,7 @@ function search_request() {
     // })
   }
 }
+
+$('.reviewsButton').click(function () {
+  console.log(this.id)
+})
