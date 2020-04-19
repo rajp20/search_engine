@@ -8,6 +8,7 @@ from clustering.Word2Vec import vectorize
 def k_means_pp(data, k, visualize=False, d=2):
     point_data = json_to_matrix(data)
     movie_id_index = 2
+    k = k if len(data) > k else len(data)
     if visualize:
         parse_data = [[] for i in range(len(point_data))]
         movie_ids = []
@@ -92,7 +93,7 @@ def plot_clusters(data, centers):
     plt.title("Post query movie groupings")
     plt.legend()
     # plt.show()
-    plt.savefig('post_query_movie_groupings.jpg')
+    plt.savefig('post_query_movie_groupings')
 
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
