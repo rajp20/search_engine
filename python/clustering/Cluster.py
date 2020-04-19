@@ -86,7 +86,8 @@ def plot_clusters(data):
             y.append(curr_point[1])
         plt.scatter(x, y, c=[colors[cluster]], alpha=0.5, label=f'Cluster {cluster + 1}')
     plt.title("Post query movie groupings")
-    plt.show()
+    # plt.show()
+    plt.savefig('post_query_movie_groupings.jpg')
 
 
 def find_nearest_centers(point_data, json_data, centers, k=3):
