@@ -123,14 +123,14 @@ def json_to_matrix(json_data):
     data = []
     for movie in json_data:
         row = []
-        description = json_data[movie]['Description'].split()
-        title = json_data[movie]['Title'].split()
-        actors = json_data[movie]['Actors'].split(',')
-        director = json_data[movie]['Director'].split(',')
-        writer = json_data[movie]['Writer'].split(',')
-        prod_company = [json_data[movie]['Production Company']]
-        genre = json_data[movie]['Genre'].split()
-        avg_vote = [json_data[movie]['Avg Vote']]
+        description = json_data[movie]['Description'].split() if len(json_data[movie]['Description']) > 0 else [" "]
+        title = json_data[movie]['Title'].split() if len(json_data[movie]['Title']) > 0 else [" "]
+        actors = json_data[movie]['Actors'].split(',') if len(json_data[movie]['Actors']) > 0 else [" "]
+        director = json_data[movie]['Director'].split(',') if len(json_data[movie]['Director']) > 0 else [" "]
+        writer = json_data[movie]['Writer'].split(',') if len(json_data[movie]['Writer']) > 0 else [" "]
+        prod_company = [json_data[movie]['Production Company']] if len(json_data[movie]['Production Company']) > 0 else [" "]
+        genre = json_data[movie]['Genre'].split() if len(json_data[movie]['Genre']) > 0 else [" "]
+        avg_vote = [json_data[movie]['Avg Vote']] if len(json_data[movie]['Avg Vote']) > 0 else [" "]
 
         row.append(description)
         row.append(title)
