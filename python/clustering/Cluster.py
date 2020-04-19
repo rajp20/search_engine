@@ -46,7 +46,7 @@ def k_means_pp(data, k, visualize=False, d=2):
         for point in point_data:
             min = math.inf
             for curr_center in centers:
-                curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center)
+                curr_distance = euclidean_distance(point[:len(point) - movie_id_index], curr_center)
                 if curr_distance < min:
                     min = curr_distance
             sum += min ** 2
@@ -64,7 +64,7 @@ def k_means_pp(data, k, visualize=False, d=2):
     for point in point_data:
         min = math.inf
         for curr_center in centers:
-            curr_distance = euclidean_distance(point[:len(point)-movie_id_index], curr_center)
+            curr_distance = euclidean_distance(point[:len(point) - movie_id_index], curr_center)
             if curr_distance < min:
                 min = curr_distance
         sum += min ** 2
@@ -102,30 +102,77 @@ def find_nearest_centers(point_data, json_data, centers, k=3):
         min = math.inf
         center = 0
         for i in range(len(centers)):
-            curr_distance = euclidean_distance(point[:len(point)-1], centers[i])
+            curr_distance = euclidean_distance(point[:len(point) - 1], centers[i])
             if curr_distance < min:
                 min = curr_distance
                 center = i
         clusters[center].append(point)
     for cluster in range(len(clusters)):
         for point in clusters[cluster]:
-            movieID = point[len(point)-1]
+            movieID = point[len(point) - 1]
             json_data[movieID]["Cluster"] = cluster
     return json_data, clusters
+
+
+def misra_gries(json_data, k=10):
+    # build terms for each cluster
+    cluster_data = {}
+    for data in json_data:
+        movie_point = json_data[data]
+        genre = movie_point['Genre'].split()
+        if movie_point['Cluster'] in cluster_data:
+            cluster_data[movie_point['Cluster']].extend(genre)
+        else:
+            cluster_data[movie_point['Cluster']] = genre
+
+    # perform Misra Gries
+    frequent_terms = {}
+    for cluster in cluster_data:
+        A = cluster_data[cluster]
+        C = [0] * (k - 1)
+        L = {}
+        for i in range(len(A)):
+            key = [key for (key, value) in L.items() if value == A[i]]
+            if len(key) == 1:
+                C[key[0]] += 1
+            elif 0 in C:
+                index = C.index(0)
+                L[index] = A[i]
+                C[index] = 1
+            else:
+                for j in range(0, k - 1):
+                    C[j] -= 1
+                    if C[j] < 0:
+                        C[j] = 0
+        # sort the terms
+        sorted_arr = []
+        for i in range(len(C)):
+            if i in L.keys():
+                sorted_arr.append([C[i], L[i]])
+        sorted_arr.sort(key=lambda x: x[0], reverse=True)
+        frequent_terms[cluster] = sorted_arr
+
+    # Now add the terms to the json data and return it
+    for data in json_data:
+        movie_point = json_data[data]
+        json_data[data]['Frequent Terms'] = [genre[1] for genre in frequent_terms[movie_point['Cluster']]]
+    return json_data
+
 
 
 def euclidean_distance(point1, point2):
     sum = 0
     if len(point1) > 2:
         for point in range(len(point1)):
-            diff = (point1[point] - point2[point])**2
+            diff = (point1[point] - point2[point]) ** 2
             for p in diff:
                 sum += p
     else:
         for point in range(len(point1)):
-            diff = (point1[point] - point2[point])**2
+            diff = (point1[point] - point2[point]) ** 2
             sum += diff
     return math.sqrt(sum)
+
 
 def json_to_matrix(json_data):
     data = []
@@ -136,7 +183,8 @@ def json_to_matrix(json_data):
         actors = json_data[movie]['Actors'].split(',') if len(json_data[movie]['Actors']) > 0 else [" "]
         director = json_data[movie]['Director'].split(',') if len(json_data[movie]['Director']) > 0 else [" "]
         writer = json_data[movie]['Writer'].split(',') if len(json_data[movie]['Writer']) > 0 else [" "]
-        prod_company = [json_data[movie]['Production Company']] if len(json_data[movie]['Production Company']) > 0 else [" "]
+        prod_company = [json_data[movie]['Production Company']] if len(
+            json_data[movie]['Production Company']) > 0 else [" "]
         genre = json_data[movie]['Genre'].split() if len(json_data[movie]['Genre']) > 0 else [" "]
         avg_vote = [json_data[movie]['Avg Vote']] if len(json_data[movie]['Avg Vote']) > 0 else [" "]
 
