@@ -8,14 +8,15 @@ import org.lemurproject.galago.core.index.stats.IndexPartStatistics;
 import org.lemurproject.galago.core.parse.Document;
 import org.lemurproject.galago.core.parse.Document.DocumentComponents;
 import org.lemurproject.galago.core.retrieval.*;
-import org.lemurproject.galago.core.retrieval.iterator.LengthsIterator;
 import org.lemurproject.galago.core.retrieval.processing.ScoringContext;
 import org.lemurproject.galago.core.retrieval.query.Node;
 import org.lemurproject.galago.core.retrieval.query.StructuredQuery;
 import org.lemurproject.galago.utility.Parameters;
 import org.lemurproject.galago.core.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -91,15 +92,14 @@ public class SearchEngine {
 
                 //- Add weights to fields
                 Parameters weightParams = Parameters.create();
-                if(i == 0) {
+                if (i == 0) {
                     weightParams.set("title", 0.4);
                     weightParams.set("director", 0.2);
                     weightParams.set("actors", 0.2);
                     weightParams.set("description", 0.1);
                     weightParams.set("genre", 0.05);
                     weightParams.set("reviews", 0.05);
-                }
-                else if (i == 1) {
+                } else if (i == 1) {
                     weightParams.set("title", 0.2);
                     weightParams.set("director", 0.4);
                     weightParams.set("actors", 0.2);
@@ -178,7 +178,7 @@ public class SearchEngine {
                         toReturn.put(eid, toAdd);
                     }
 
-                    Evaluate(results.scoredDocuments);
+//                    Evaluate(results.scoredDocuments);
 
                     logger.info("Getting average of scores...");
                     Double average = 0.0;
@@ -205,20 +205,38 @@ public class SearchEngine {
     }
 
     public static void Evaluate(List<ScoredDocument> scoredDocuments) {
-        // Evaluate and it's parameters
-        Eval evaluate = new Eval();
-        Parameters evalParam = Parameters.create();
-        evalParam.set("baseline", scoredDocuments);
-        evalParam.set("judgments", judgmentFile);
-        evalParam.set("verbose", true);
-        List<String> metrics = new ArrayList<String>();
-        metrics.add("MAP");
-        evalParam.set("metrics", metrics);
-
         try {
+            // Evaluate and it's parameters
+            ResultWriter resultWriter = new ResultWriter("movies.list", false);
+            resultWriter.write("1", scoredDocuments);
+            Eval evaluate = new Eval();
+            Parameters evalParam = Parameters.create();
+            evalParam.set("baseline", "movies.list");
+            evalParam.set("judgments", judgmentFile);
+            evalParam.set("verbose", true);
+            List<String> metrics = new ArrayList<String>();
+            metrics.add("MAP");
+            metrics.add("nDCG");
+            evalParam.set("metrics", metrics);
+
             // Evaluate
             logger.info("Evaluating queries...");
+
+            // To store in string
+            // Create a stream to hold the output
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos);
+            // IMPORTANT: Save the old System.out!
+            PrintStream old = System.out;
+            // Tell Java to use your special stream
+            System.setOut(ps);
+
             evaluate.run(evalParam, System.out);
+
+            // Put things back
+            System.out.flush();
+            System.setOut(old);
+            logger.info(baos.toString());
             logger.info("Done.\n");
         } catch (Exception ex) {
             ex.printStackTrace();
