@@ -60,9 +60,9 @@ public class SearchEngine {
     }
 
     public static JSONObject searchWithGalago(String query, String indexPath) {
-        List<JSONObject> returnObjects = new ArrayList<>();
-        List<Double> averages = new ArrayList<>();
-        for (int i = 0; i < 2; i++) {
+        JSONObject bestToReturn = new JSONObject();
+        Double bestAverage = Double.MIN_VALUE;
+        for (int i = 0; i < 5; i++) {
             JSONObject toReturn = new JSONObject();
             try {
                 Parameters queryParams = Parameters.create();
@@ -81,7 +81,7 @@ public class SearchEngine {
                 queryParams.set("relevanceModel", "org.lemurproject.galago.core.retrieval.prf.RelevanceModel1");
 
                 //- Add title and actors fields
-                String[] fields = {"title", "actors"};
+                String[] fields = {"title", "actors", "reviews", "director", "description", "genre"};
                 queryParams.set("fields", fields);
 
                 //- Score set to jm
@@ -90,15 +90,37 @@ public class SearchEngine {
                 //- Add weights to fields
                 Parameters weightParams = Parameters.create();
                 if(i == 0) {
-                    weightParams.set("title", 0.8);
+                    weightParams.set("title", 0.4);
+                    weightParams.set("director", 0.2);
                     weightParams.set("actors", 0.2);
-                    queryParams.set("weights", weightParams);
+                    weightParams.set("description", 0.1);
+                    weightParams.set("genre", 0.05);
+                    weightParams.set("reviews", 0.05);
                 }
-                else {
+                else if (i == 1) {
                     weightParams.set("title", 0.2);
-                    weightParams.set("actors", 0.8);
-                    queryParams.set("weights", String.valueOf(weightParams));
+                    weightParams.set("director", 0.4);
+                    weightParams.set("actors", 0.2);
+                    weightParams.set("description", 0.1);
+                    weightParams.set("genre", 0.05);
+                    weightParams.set("reviews", 0.05);
+                } else if (i == 2) {
+                    weightParams.set("title", 0.2);
+                    weightParams.set("director", 0.2);
+                    weightParams.set("actors", 0.4);
+                    weightParams.set("description", 0.1);
+                    weightParams.set("genre", 0.05);
+                    weightParams.set("reviews", 0.05);
+                } else if (i == 3) {
+                    weightParams.set("description", 0.6);
+                    weightParams.set("genre", 0.3);
+                    weightParams.set("reviews", 0.1);
+                } else {
+                    weightParams.set("description", 0.3);
+                    weightParams.set("genre", 0.6);
+                    weightParams.set("reviews", 0.1);
                 }
+                queryParams.set("weights", weightParams);
 
                 //- Set the index to be searched
                 Retrieval ret = RetrievalFactory.create(queryParams);
@@ -126,18 +148,20 @@ public class SearchEngine {
                     //  document.
                     DocumentComponents dcs = new DocumentComponents();
 
+                    List<Double> scores = new ArrayList<>();
+                    Double minScore = Double.MAX_VALUE;
+                    Double maxScore = Double.MIN_VALUE;
+
                     for (ScoredDocument sd : results.scoredDocuments) {
                         int rank = sd.rank;
 
-                        //- internal ID (indexing sequence number)of document
-                        long iid = sd.document;
                         double score = sd.score;
+                        scores.add(score);
+                        minScore = Math.min(minScore, score);
+                        maxScore = Math.max(maxScore, score);
 
                         //- Get the external ID (ID in the text) of the document.
                         String eid = ret.getDocumentName(sd.document);
-
-                        //- Get document length based on the internal ID.
-                        int len = ret.getDocumentLength(sd.document);
 
                         ret.getDocument(eid, dcs);
 
@@ -151,17 +175,21 @@ public class SearchEngine {
 
                         toReturn.put(eid, toAdd);
                     }
-                    Double average = results.scoredDocuments.stream()
-                            .mapToDouble(p -> p.score)
-                            .average()
-                            .orElse(0);
 
-                    if (Double.isInfinite(average)) {
-                        average = -1000.0;
+                    logger.info("Getting average of scores...");
+                    Double average = 0.0;
+                    // Get mean of the scores
+                    for (int j = 0; j < scores.size(); j++) {
+                        Double mean = (scores.get(j) - minScore) / (maxScore - minScore);
+                        average += mean;
                     }
+                    average /= 50;
+
                     logger.info(average.toString());
-                    averages.add(average);
-                    returnObjects.add(toReturn);
+                    if (bestAverage < average) {
+                        bestAverage = average;
+                        bestToReturn = toReturn;
+                    }
 
                     logger.info("Total documents containing the word '" + query + "': " + results.scoredDocuments.size());
                 }
@@ -169,9 +197,6 @@ public class SearchEngine {
                 ex.printStackTrace();
             }
         }
-        if (averages.get(0) > averages.get(1)) {
-            return returnObjects.get(0);
-        }
-        return returnObjects.get(1);
+        return bestToReturn;
     }
 }

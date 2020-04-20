@@ -22,14 +22,6 @@ body {
     font-size: x-large;
 }
 
-#clusters {
-    width: 30vw;
-}
-
-#results {
-    width: 70vw;
-}
-
 .search_bar {
     width: 35vw;
     height: 25px;
