@@ -1,5 +1,6 @@
 import org.json.JSONObject;
 
+import org.lemurproject.galago.core.eval.Eval;
 import org.lemurproject.galago.core.index.Index;
 import org.lemurproject.galago.core.index.corpus.DocumentReader;
 import org.lemurproject.galago.core.index.stats.FieldStatistics;
@@ -24,6 +25,7 @@ import java.util.logging.SimpleFormatter;
 public class SearchEngine {
 
     public static String moviesIndex = "../dataset/movies_index";
+    public static final String judgmentFile = "../dataset/movies.qrels";
 
     public static Logger logger = Logger.getLogger("MyLog");
 
@@ -176,6 +178,8 @@ public class SearchEngine {
                         toReturn.put(eid, toAdd);
                     }
 
+                    Evaluate(results.scoredDocuments);
+
                     logger.info("Getting average of scores...");
                     Double average = 0.0;
                     // Get mean of the scores
@@ -198,5 +202,26 @@ public class SearchEngine {
             }
         }
         return bestToReturn;
+    }
+
+    public static void Evaluate(List<ScoredDocument> scoredDocuments) {
+        // Evaluate and it's parameters
+        Eval evaluate = new Eval();
+        Parameters evalParam = Parameters.create();
+        evalParam.set("baseline", scoredDocuments);
+        evalParam.set("judgments", judgmentFile);
+        evalParam.set("verbose", true);
+        List<String> metrics = new ArrayList<String>();
+        metrics.add("MAP");
+        evalParam.set("metrics", metrics);
+
+        try {
+            // Evaluate
+            logger.info("Evaluating queries...");
+            evaluate.run(evalParam, System.out);
+            logger.info("Done.\n");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
