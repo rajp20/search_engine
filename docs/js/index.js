@@ -21,8 +21,10 @@ function handle_search_response(data) {
 
 function search_request() {
   let query_text = $("#search_bar_input").val()
+  query_text = query_text.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
   if (query_text != "") {
     console.log('Making search request...')
+    console.log("Query: " + query_text)
     $.ajax({
       'type': 'GET',
       'url': "http://localhost:8000/search",
@@ -39,11 +41,7 @@ function reviewButtonClick(id) {
   if (receivedData === null) {
     return
   }
-  let idString = id.toString()
-  while (idString.length != 7) {
-    idString = '0' + idString
-  }
-  id = idString
+  id = id.replace('expanded', '')
   let modelContent = document.getElementById('modal-content-id')
   let htmlToAdd = '<span id="close-id" class="close">&times;</span>'
   htmlToAdd += getReviewHTML(id)

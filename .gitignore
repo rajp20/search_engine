@@ -24,3 +24,5 @@ dataset/*
 
 python/*.jar
 META-INF/
+
+python/post_query_movie_groupings*

@@ -3,14 +3,16 @@ class Results {
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
-    this.svgWidth = (vw - 16) * 0.7
-    this.svgHeight = vh - 200
+    let svgWidth = (vw - 16)
+    let svgHeight = vh - 200
 
-    this.rankWidth = this.svgWidth * 0.04
-    this.movieTitleWidth = this.svgWidth * 0.25
-    this.actorsWidth = this.svgWidth * 0.58
-    this.yearWidth = this.svgWidth * 0.06
-    this.avgVoteWidth = this.svgWidth * 0.07
+    this.rankWidth = svgWidth * 0.03
+    this.movieTitleWidth = svgWidth * 0.2
+    this.actorsWidth = svgWidth * 0.43
+    this.yearWidth = svgWidth * 0.04
+    this.avgVoteWidth = svgWidth * 0.05
+    this.clusterWidth = svgWidth * 0.05
+    this.freqTermsWidth = svgWidth * 0.2
 
     this.toggleSort = true
 
@@ -37,6 +39,12 @@ class Results {
 
     d3.select('#avgVoteHeader')
       .style('width', this.avgVoteWidth + 'px')
+
+    d3.select('#clusterHeader')
+      .style('width', this.clusterWidth + 'px')
+
+    d3.select('#freqTermsHeader')
+      .style('width', this.freqTermsWidth + 'px')
 
     let that = this;
 
@@ -75,6 +83,20 @@ class Results {
             that.sortDescending('Avg Vote')
           }
         }
+        if (this.textContent.includes('Cluster #')) {
+          if (that.toggleSort) {
+            that.sortAscending('Cluster')
+          } else {
+            that.sortDescending('Cluster')
+          }
+        }
+        if (this.textContent.includes('Frequent Terms')) {
+          if (that.toggleSort) {
+            that.sortAscending('Frequent Terms')
+          } else {
+            that.sortDescending('Frequent Terms')
+          }
+        }
         that.toggleSort = !that.toggleSort
         that.updateTable()
       })
@@ -102,6 +124,9 @@ class Results {
     tr = newTr.merge(tr)
 
     tr.attr('id', (d) => {
+      if (d.ID === "expanded") {
+        return `${d.ID}${d.id}Row`
+      }
       return `${d.ID}Row`
     })
 
@@ -140,7 +165,24 @@ class Results {
         field: "avgVote",
         type: "text"
       }
-      return [rank, movieTitle, actors, year, avgVote]
+      let cluster = {
+        value: parseInt(d.Cluster),
+        field: "cluster",
+        type: "text"
+      }
+      let freqTermsList = []
+      d['Frequent Terms'].forEach((item) => {
+        item = item.replace(',', '')
+        if (!freqTermsList.includes(item)) {
+          freqTermsList.push(item)
+        }
+      })
+      let freqTerms = {
+        value: freqTermsList.join(', '),
+        field: "freqTerms",
+        type: "text"
+      }
+      return [rank, movieTitle, actors, year, avgVote, cluster, freqTerms]
     })
 
     let newTd = td.enter()
@@ -162,7 +204,7 @@ class Results {
 
     // Set the expanded col to span all columns
     expandedCol
-      .attr('colspan', 5)
+      .attr('colspan', 7)
       .classed('no_padding', true)
 
     expandedCol
@@ -177,6 +219,13 @@ class Results {
     movieTitleCols
       .classed('movieTitles', true)
       .style('width', this.movieTitleWidth + 'px')
+
+    let freqTerms = td.filter((d) => {
+      return d.field === "freqTerms"
+    })
+
+    freqTerms
+      .style('width', this.freqTermsWidth + 'px')
 
     let textCols = td.filter((d) => {
       return d.type === "text"
@@ -283,7 +332,7 @@ class Results {
       htmlRender += `<p><b>Reviews From Critics:</b> ${parseInt(d['Reviews From Users'])}</p>`
     }
     if (d.Reviews.length !== 0) {
-      htmlRender += `<button class="reviewsButton" onclick="reviewButtonClick(${d.id})">Reviews</button>`
+      htmlRender += `<button id="${d.id}${d.ID}" class="reviewsButton" onclick="reviewButtonClick(this.id)">Reviews</button>`
     }
     htmlRender += `</div></div></div>`
     return htmlRender
