@@ -40,16 +40,10 @@ class Results {
     d3.select('#avgVoteHeader')
       .style('width', this.avgVoteWidth + 'px')
 
-    d3.select('#clusterHeader')
-      .style('width', this.clusterWidth + 'px')
-
-    d3.select('#freqTermsHeader')
-      .style('width', this.freqTermsWidth + 'px')
-
     let that = this;
 
     // For sorting the list.
-    d3.select('thead').selectAll('th')
+    d3.select('#results').selectAll('th')
       .on('click', function () {
         if (that.data === null) {
           return
@@ -81,20 +75,6 @@ class Results {
             that.sortAscending('Avg Vote')
           } else {
             that.sortDescending('Avg Vote')
-          }
-        }
-        if (this.textContent.includes('Cluster #')) {
-          if (that.toggleSort) {
-            that.sortAscending('Cluster')
-          } else {
-            that.sortDescending('Cluster')
-          }
-        }
-        if (this.textContent.includes('Frequent Terms')) {
-          if (that.toggleSort) {
-            that.sortAscending('Frequent Terms')
-          } else {
-            that.sortDescending('Frequent Terms')
           }
         }
         that.toggleSort = !that.toggleSort
@@ -165,24 +145,7 @@ class Results {
         field: "avgVote",
         type: "text"
       }
-      let cluster = {
-        value: parseInt(d.Cluster),
-        field: "cluster",
-        type: "text"
-      }
-      let freqTermsList = []
-      d['Frequent Terms'].forEach((item) => {
-        item = item.replace(',', '')
-        if (!freqTermsList.includes(item)) {
-          freqTermsList.push(item)
-        }
-      })
-      let freqTerms = {
-        value: freqTermsList.join(', '),
-        field: "freqTerms",
-        type: "text"
-      }
-      return [rank, movieTitle, actors, year, avgVote, cluster, freqTerms]
+      return [rank, movieTitle, actors, year, avgVote]
     })
 
     let newTd = td.enter()
@@ -204,7 +167,7 @@ class Results {
 
     // Set the expanded col to span all columns
     expandedCol
-      .attr('colspan', 7)
+      .attr('colspan', 5)
       .classed('no_padding', true)
 
     expandedCol
@@ -219,13 +182,6 @@ class Results {
     movieTitleCols
       .classed('movieTitles', true)
       .style('width', this.movieTitleWidth + 'px')
-
-    let freqTerms = td.filter((d) => {
-      return d.field === "freqTerms"
-    })
-
-    freqTerms
-      .style('width', this.freqTermsWidth + 'px')
 
     let textCols = td.filter((d) => {
       return d.type === "text"

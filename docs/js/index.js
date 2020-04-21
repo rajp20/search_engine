@@ -1,6 +1,9 @@
 let resultsView = new Results()
 resultsView.setupView()
 
+let clusterView = new Clusters()
+clusterView.setupView()
+
 let receivedData = null
 
 // Search bar events
@@ -17,6 +20,8 @@ function handle_search_response(data) {
   resultsView.updateList(Object.values(data))
   resultsView.sortAscending('Rank')
   resultsView.updateTable()
+  clusterView.updateList(Object.values(data))
+  clusterView.updateTable()
 }
 
 function search_request() {

@@ -12,6 +12,20 @@ body {
     flex-direction: row;
 }
 
+#results {
+    width: 70vw;
+    padding-right: 10px;
+}
+
+#clusters {
+    width: 30vw;
+    padding-left: 10px;
+}
+
+.mostFreqTerm {
+    margin: 16px 0 8px 0;
+}
+
 #search_bar_container {
     align-items: center;
     padding: 0 10px 25px 10px;
@@ -76,6 +90,10 @@ tr {
 
 td {
     padding: 10px;
+}
+
+#clusters td {
+    padding: 5px 10px 5px 10px;
 }
 
 td:hover {
